@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { useFonts } from "expo-font";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { AuthProvider } from "./Context/AuthContext.js";
+import Navigation from "./Pages/Components/Navigation.js";
+
+function App() {
+    let [fontsLoaded] = useFonts({
+        "Be Vietnam": require("./Public/Fonts/Be_Vietnam_Pro/BeVietnamPro-Regular.ttf"),
+        "Be Vietnam Medium": require("./Public/Fonts/Be_Vietnam_Pro/BeVietnamPro-Medium.ttf"),
+        "Be Vietnam italic": require("./Public/Fonts/Be_Vietnam_Pro/BeVietnamPro-Italic.ttf"),
+        "Be Vietnam bold": require("./Public/Fonts/Be_Vietnam_Pro/BeVietnamPro-Bold.ttf"),
+    });
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
+    return (
+        <AuthProvider>
+            <Navigation />
+        </AuthProvider>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
