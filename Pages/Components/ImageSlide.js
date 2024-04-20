@@ -22,7 +22,7 @@ const ImageSlide = ({ imageList }) => {
                 pagingEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                className="h-72 w-56 self-center"
+                className="h-80 w-56 self-center"
                 onScroll={change}
             >
                 {imageList.map((image, index) => (
@@ -32,11 +32,11 @@ const ImageSlide = ({ imageList }) => {
                                 source={{
                                     uri: image,
                                 }}
-                                className="h-72 w-56"
+                                className="h-80 w-56"
                             />
                         ) : (
                             <Video
-                                className="h-72 w-56"
+                                className="h-80 w-56"
                                 source={{ uri: image }}
                                 useNativeControls
                                 resizeMode={ResizeMode.CONTAIN}
@@ -55,7 +55,7 @@ const ImageSlide = ({ imageList }) => {
                 {imageList.map((image, index) => (
                     <CustomText
                         key={index}
-                        className="ml-1 mb-1"
+                        className="ml-1 mb-2"
                         style={{
                             fontSize: 6,
                             color: index === active ? "#fff" : "#888",

@@ -13,8 +13,10 @@ import { CustomText } from "../Components/CustomText";
 import { scale, textInputDefaultSize } from "../../Utils/constants.js";
 import FeedbackList from "../Components/FeedbackList.js";
 import SuggestedProductList from "../Components/SuggestedProductList.js";
+import Cart from "../Components/Cart.js";
 
 const Home = ({ navigation, route }) => {
+    const [modalVisible, setModalVisible] = useState(false);
     const [txtSearch, SetTxtSearch] = useState(null);
     const inputRef = useRef(null);
 
@@ -267,7 +269,7 @@ const Home = ({ navigation, route }) => {
                         </Pressable>
                         <TouchableOpacity
                             className="w-10 p-1 flex-row flex-end items-center justify-center"
-                            // onPress={() => SetModalVisible(true)}
+                            onPress={() => setModalVisible(true)}
                         >
                             <Image
                                 className="h-5 w-5"
@@ -318,6 +320,42 @@ const Home = ({ navigation, route }) => {
                 </View>
                 <View className="mb-40"></View>
             </ScrollView>
+            <Cart
+                products={[
+                    {
+                        id: 1,
+                        name: "Hoa hướng dương",
+                        unitPrice: 123,
+                        discount: 12,
+                        numberOfFlowers: 12,
+                        image: "https://th.bing.com/th/id/R.516e257fdf19eb76477265007bff6f68?rik=yDSJCcpSgFh0aA&riu=http%3a%2f%2fblogcaycanh.vn%2fuploads%2fcaycanh%2f1388107807_hoa-huong-duong.jpg&ehk=y1%2batE2X8bX2zrci35kvSFY7sMbTb%2fpbV5QPR6%2fQ9rI%3d&risl=&pid=ImgRaw&r=0",
+                        remainAmount: 23,
+                        selected: false,
+                    },
+                    {
+                        id: 2,
+                        name: "Hoa đào",
+                        unitPrice: 321,
+                        discount: 82,
+                        numberOfFlowers: 3,
+                        image: "https://th.bing.com/th/id/R.88c7ab37edaae90a6a87f992ec449987?rik=RCcIweKARQ%2bqLQ&pid=ImgRaw&r=0",
+                        remainAmount: 5,
+                        selected: false,
+                    },
+                    {
+                        id: 3,
+                        name: "Hoa mừng sinh nhật",
+                        unitPrice: 157,
+                        discount: 33,
+                        numberOfFlowers: 134,
+                        image: "https://th.bing.com/th/id/OIP.jd84v1WHL2uhU9Jaz1UmQAHaGA?rs=1&pid=ImgDetMain",
+                        remainAmount: 233,
+                        selected: false,
+                    },
+                ]}
+                visible={modalVisible}
+                closeModal={() => setModalVisible(false)}
+            />
         </View>
     );
 };

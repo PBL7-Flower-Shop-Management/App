@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { TouchableOpacity, View, TextInput } from "react-native";
 import { CustomText } from "./CustomText";
-import { useEffect, useState } from "react";
 
 export const IncrementCounter = ({
     value,
@@ -14,8 +14,8 @@ export const IncrementCounter = ({
     const handleInputChange = (value) => {
         // Replace the initial '0' or prevent leading zeros
         const newValue = value.replace(/^0+/, "");
-        if (parseInt(newValue || "0") > max) setInput(max.toString());
-        else setInput(newValue || "0"); // Set to '0' if newValue is empty
+        if (parseInt(newValue) > max) setInput(max.toString());
+        else setInput(newValue); // Set to '0' if newValue is empty
     };
     useEffect(() => {
         setValue(parseInt(input || "0"));
@@ -29,7 +29,7 @@ export const IncrementCounter = ({
     };
     const handleDecrement = () => {
         var newValue = value - 1;
-        if (newValue >= 0) {
+        if (newValue >= 1) {
             setInput(newValue.toString());
         }
     };
@@ -66,6 +66,9 @@ export const IncrementCounter = ({
                         keyboardType="number-pad"
                         value={input}
                         onChangeText={handleInputChange}
+                        onBlur={() => {
+                            if (input === "") setInput("1");
+                        }}
                     />
                     <TouchableOpacity
                         className="px-3 border-l border-gray-300"
@@ -93,7 +96,12 @@ export const IncrementCounter = ({
                         </CustomText>
                     )}
                     <CustomText style={{ fontSize: 17 }}>
-                        {value * unitPrice * (1 - discount / 100)}$
+                        {parseFloat(
+                            (value * unitPrice * (1 - discount / 100)).toFixed(
+                                2
+                            )
+                        )}
+                        $
                     </CustomText>
                 </View>
             )}

@@ -239,6 +239,7 @@ const BottomTab = ({ navigation }) => {
                                     </CustomText>
                                 </View>
                             ),
+                            tabBarStyle: { display: "none" },
                         }}
                     />
                     {/* <Tab.Screen

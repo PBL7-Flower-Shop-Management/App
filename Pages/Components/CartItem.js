@@ -2,17 +2,25 @@ import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { CustomText } from "./CustomText";
 import { IncrementCounter } from "./IncrementCounter";
+import Checkbox from "expo-checkbox";
 
-const CartItem = ({ product }) => {
+const CartItem = ({ product, handleChangeNumber, handleCheckItem }) => {
     const [value, setValue] = useState(product.numberOfFlowers);
     useEffect(() => {
-        product.numberOfFlowers = value;
+        handleChangeNumber(value);
     }, [value]);
 
     return (
-        <View className="flex-row gap-x-2 mt-2">
+        <View className="flex-row items-center mt-2">
+            <TouchableOpacity className="p-2" onPress={handleCheckItem}>
+                <Checkbox
+                    value={product.selected}
+                    onValueChange={handleCheckItem}
+                    color={product.selected ? "#53B6ED" : "#DFE0E2"}
+                />
+            </TouchableOpacity>
             <Image
-                className="h-28 w-20"
+                className="h-24 w-20 mr-2"
                 source={{
                     uri: product.image,
                 }}
