@@ -68,9 +68,10 @@ export const ShowAlert = ({
     );
 };
 
-export const scrollToIndex = (index, scrollViewRef, item_width) => {
-    const offset = index * item_width;
-    scrollViewRef.current.scrollTo({ x: offset, y: 0, animated: true });
+export const FixedFloat = (number, numberOfDecimalPlaces = 2) => {
+    if (numberOfDecimalPlaces >= 0)
+        return parseFloat(parseFloat(number).toFixed(numberOfDecimalPlaces));
+    else return number;
 };
 
 export const ShortenString = (str = "", numberOfCharacters = 10) => {

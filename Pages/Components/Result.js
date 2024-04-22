@@ -124,7 +124,10 @@ export const Result = ({ data }) => {
                                         </View>
                                     </View>
                                     {data.results.slice(1).map((r, id) => (
-                                        <View className="flex-row justify-between mt-2">
+                                        <View
+                                            className="flex-row justify-between mt-2"
+                                            key={id}
+                                        >
                                             <View className="flex-grow items-center">
                                                 <TouchableOpacity
                                                     className="items-center"

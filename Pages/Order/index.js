@@ -268,15 +268,20 @@ const Order = ({ navigation, route }) => {
                                         </View>
                                     </View>
                                     <View className="flex-row justify-evenly gap-x-1 px-1">
-                                        <TouchableOpacity className="items-center border border-blue-400 p-2 w-5/12 rounded-lg">
+                                        <TouchableOpacity
+                                            className="items-center border border-blue-400 p-2 w-5/12 rounded-lg"
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    "OrderDetail"
+                                                )
+                                            }
+                                        >
                                             <CustomText>
                                                 Xem chi tiết
                                             </CustomText>
                                         </TouchableOpacity>
-                                        <TouchableOpacity className="items-center border border-yellow-500 p-2 w-5/12 px-4 rounded-lg">
-                                            <CustomText>
-                                                Theo dõi đơn
-                                            </CustomText>
+                                        <TouchableOpacity className="items-center border border-red-500 p-2 w-5/12 px-4 rounded-lg">
+                                            <CustomText>Huỷ đơn</CustomText>
                                         </TouchableOpacity>
                                     </View>
                                 </View>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     View,
     Image,
@@ -102,6 +102,21 @@ const ProductList = ({ title, products, navigation }) => {
                                         </CustomText>
                                     </View>
                                 )}
+                                <TouchableOpacity
+                                    className="items-end flex-grow pl-1 pt-1"
+                                    onPress={() =>
+                                        (product.isHeart = !product.isHeart)
+                                    }
+                                >
+                                    <Image
+                                        className="h-5 w-5"
+                                        source={
+                                            product.isHeart
+                                                ? require("../../Public/Images/heart.png")
+                                                : require("../../Public/Images/unHeart.png")
+                                        }
+                                    />
+                                </TouchableOpacity>
                             </View>
                         </TouchableOpacity>
                     );
