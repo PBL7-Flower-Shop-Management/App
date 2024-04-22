@@ -7,10 +7,12 @@ import {
     KeyboardAvoidingView,
     Platform,
     Modal,
+    Image,
 } from "react-native";
 import { CustomText } from "./CustomText";
 import CartItem from "./CartItem";
 import Checkbox from "expo-checkbox";
+import { ShowAlert } from "../../Utils/helper";
 
 const Cart = ({ products, visible, closeModal }) => {
     const [listCart, setListCart] = useState(products);
@@ -53,6 +55,48 @@ const Cart = ({ products, visible, closeModal }) => {
         setListCart(listNewCart);
     };
 
+    const handleDeleteItem = (products) => {
+        ShowAlert({
+            title: "Cảnh báo",
+            alertContent: "Bạn có chắc chắn muốn xoá món hàng này?",
+            firstBtnName: "Huỷ",
+            secondBtnName: "Xoá",
+            handleFirstBtn: () => {},
+            handleSecondBtn: () => {
+                const listNewCart = listCart.filter(
+                    (i) => i.id !== products.id
+                );
+                setListCart(listNewCart);
+            },
+        });
+    };
+
+    const handleDeleteSelectedItem = () => {
+        if (selectedCart.length === 0)
+            ShowAlert({
+                title: "Thông báo",
+                alertContent: "Không có món hàng nào được chọn!",
+                firstBtnName: "Đóng",
+                handleFirstBtn: () => {},
+            });
+        else
+            ShowAlert({
+                title: "Cảnh báo",
+                alertContent:
+                    "Bạn có chắc chắn muốn xoá tất cả những món hàng đã chọn?",
+                firstBtnName: "Huỷ",
+                secondBtnName: "Xoá",
+                handleFirstBtn: () => {},
+                handleSecondBtn: () => {
+                    const selectedId = selectedCart.map((sc) => sc.id);
+                    const listNewCart = listCart.filter(
+                        (i) => !selectedId.some((si) => si === i.id)
+                    );
+                    setListCart(listNewCart);
+                },
+            });
+    };
+
     const calculateTotalPrice = () => {
         setTotalPrice(
             parseFloat(
@@ -81,6 +125,7 @@ const Cart = ({ products, visible, closeModal }) => {
 
     useEffect(() => {
         calculateTotalPrice();
+        if (selectedCart.length === 0) setIsCheckAll(false);
     }, [selectedCart]);
 
     return (
@@ -96,9 +141,9 @@ const Cart = ({ products, visible, closeModal }) => {
                         translucent
                         backgroundColor="transparent"
                     />
-                    <View className="flex-row mt-10 items-center">
+                    <View className="flex-row mt-10 items-center justify-center">
                         <TouchableOpacity
-                            className="pt-2 pl-2"
+                            className="absolute z-10 left-2"
                             onPress={closeModal}
                         >
                             <CustomText
@@ -110,12 +155,11 @@ const Cart = ({ products, visible, closeModal }) => {
                                 X
                             </CustomText>
                         </TouchableOpacity>
-                        <View className="flex-grow pt-2">
+                        <View>
                             <CustomText
                                 style={{
                                     fontFamily: "Be Vietnam bold",
                                     color: "black",
-                                    alignSelf: "center",
                                     fontSize: 18,
                                 }}
                             >
@@ -138,9 +182,18 @@ const Cart = ({ products, visible, closeModal }) => {
                         <CustomText>
                             Tất cả ({listCart.length} sản phẩm)
                         </CustomText>
+                        <TouchableOpacity
+                            className="flex-grow items-end"
+                            onPress={handleDeleteSelectedItem}
+                        >
+                            <Image
+                                className="h-6 w-6"
+                                source={require("../../Public/Images/remove.png")}
+                            />
+                        </TouchableOpacity>
                     </View>
                     <View className="my-2 h-0.5 bg-gray-100"></View>
-                    {listCart ? (
+                    {listCart && listCart.length > 0 ? (
                         <View className="flex-grow justify-between pb-5">
                             <View>
                                 <ScrollView>
@@ -153,6 +206,9 @@ const Cart = ({ products, visible, closeModal }) => {
                                             }}
                                             handleCheckItem={() =>
                                                 handleCheckItem(p)
+                                            }
+                                            handleDeleteItem={() =>
+                                                handleDeleteItem(p)
                                             }
                                         />
                                     ))}

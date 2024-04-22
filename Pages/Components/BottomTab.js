@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
     StyleSheet,
     View,
@@ -11,13 +11,13 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HomeTab from "../HomeTab/index";
-// import Criminal from "../Criminal/index";
-// import Case from "../Case/index";
-// import Profile from "../Profile/index";
 import { CustomText } from "./CustomText";
-// import FaceDetectTab from "../FaceDetectTab/index";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { API_URL, scale } from "../../Utils/constants";
+import FlowerDetectTab from "../FlowerDetect/index.js";
+import AccountTab from "../Account/index.js";
+import CategoryTab from "../Category/index.js";
+import IdentificationHistoryTab from "../IdentificationHistory/index.js";
 // import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
 // import { HubConnectionBuilder } from "@microsoft/signalr";
 // import { setupURLPolyfill } from "react-native-url-polyfill";
@@ -196,7 +196,7 @@ const BottomTab = ({ navigation }) => {
                         tabBarStyle: {
                             position: "absolute",
                             elevation: 0,
-                            backgroundColor: "#1E1E1E",
+                            backgroundColor: "white",
                             borderTopLeftRadius: 10,
                             borderTopRightRadius: 10,
                             height: 96,
@@ -217,29 +217,30 @@ const BottomTab = ({ navigation }) => {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../Public/Images/home.png")}
+                                        source={
+                                            focused
+                                                ? require("../../Public/Images/home.png")
+                                                : require("../../Public/Images/lightHome.png")
+                                        }
                                         resizeMode="contain"
                                         style={{
                                             width: 25,
                                             height: 25,
                                             tintColor: focused
                                                 ? "#386BF6"
-                                                : "white",
+                                                : "gray",
                                         }}
                                     />
                                     <CustomText
                                         style={{
-                                            color: focused
-                                                ? "#386BF6"
-                                                : "white",
-                                            fontSize: 12 * scale,
+                                            color: focused ? "#386BF6" : "gray",
+                                            fontSize: 10 * scale,
                                         }}
                                     >
                                         Trang chủ
                                     </CustomText>
                                 </View>
                             ),
-                            tabBarStyle: { display: "none" },
                         }}
                     />
                     {/* <Tab.Screen
@@ -248,8 +249,8 @@ const BottomTab = ({ navigation }) => {
                         options={{ tabBarButton: () => null }}
                     /> */}
                     <Tab.Screen
-                        name="Criminals"
-                        component={HomeTab}
+                        name="CategoryTab"
+                        component={CategoryTab}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <View
@@ -260,47 +261,49 @@ const BottomTab = ({ navigation }) => {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../Public/Images/criminal.png")}
+                                        source={
+                                            focused
+                                                ? require("../../Public/Images/category.png")
+                                                : require("../../Public/Images/lightCategory.png")
+                                        }
                                         resizeMode="contain"
                                         style={{
                                             width: 25,
                                             height: 25,
                                             tintColor: focused
                                                 ? "#386BF6"
-                                                : "white",
+                                                : "gray",
                                         }}
                                     />
                                     <CustomText
                                         style={{
-                                            color: focused
-                                                ? "#386BF6"
-                                                : "white",
-                                            fontSize: 12 * scale,
+                                            color: focused ? "#386BF6" : "gray",
+                                            fontSize: 10 * scale,
                                         }}
                                     >
-                                        Tội phạm
+                                        Danh mục
                                     </CustomText>
                                 </View>
                             ),
                         }}
                     />
                     <Tab.Screen
-                        name="FaceDetectTab"
+                        name="FlowerDetectTab"
                         options={{
                             tabBarIcon: () => (
                                 <Image
-                                    source={require("../../Public/Images/AI.png")}
+                                    source={require("../../Public/Images/flowerDetect.png")}
                                     resizeMode="contain"
                                     style={{
-                                        width: 70,
-                                        height: 70,
+                                        width: 80,
+                                        height: 80,
                                     }}
                                 />
                             ),
                             tabBarButton: (props) => (
                                 <TouchableOpacity
                                     style={{
-                                        top: -20,
+                                        top: -10,
                                         justifyContent: "center",
                                         alignItems: "center",
                                         // ...styles.shadow
@@ -312,10 +315,21 @@ const BottomTab = ({ navigation }) => {
                                             width: 80,
                                             height: 80,
                                             borderRadius: 100,
-                                            backgroundColor: "#1E1E1E",
+                                            backgroundColor: "transparent",
                                         }}
                                     >
                                         {props.children}
+                                        <View className="items-center mt-1">
+                                            <CustomText
+                                                style={{
+                                                    textAlign: "center",
+                                                    color: "gray",
+                                                    fontSize: 10 * scale,
+                                                }}
+                                            >
+                                                Nhận dạng hoa
+                                            </CustomText>
+                                        </View>
                                     </View>
                                 </TouchableOpacity>
                             ),
@@ -325,12 +339,14 @@ const BottomTab = ({ navigation }) => {
                         }}
                     >
                         {() => (
-                            <FaceDetectTab SetIsNavBarShow={SetIsNavBarShow} />
+                            <FlowerDetectTab
+                                SetIsNavBarShow={SetIsNavBarShow}
+                            />
                         )}
                     </Tab.Screen>
                     <Tab.Screen
-                        name="Case"
-                        component={HomeTab}
+                        name="IdentificationHistoryTab"
+                        component={IdentificationHistoryTab}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <View
@@ -341,33 +357,35 @@ const BottomTab = ({ navigation }) => {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../Public/Images/case.png")}
+                                        source={
+                                            focused
+                                                ? require("../../Public/Images/history.png")
+                                                : require("../../Public/Images/lightHistory.png")
+                                        }
                                         resizeMode="stretch"
                                         style={{
                                             width: 25,
                                             height: 25,
                                             tintColor: focused
                                                 ? "#386BF6"
-                                                : "white",
+                                                : "gray",
                                         }}
                                     />
                                     <CustomText
                                         style={{
-                                            color: focused
-                                                ? "#386BF6"
-                                                : "white",
-                                            fontSize: 12 * scale,
+                                            color: focused ? "#386BF6" : "gray",
+                                            fontSize: 10 * scale,
                                         }}
                                     >
-                                        Vụ án
+                                        Lịch sử
                                     </CustomText>
                                 </View>
                             ),
                         }}
                     />
                     <Tab.Screen
-                        name="Profile"
-                        component={HomeTab}
+                        name="AccountTab"
+                        component={AccountTab}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <View
@@ -378,25 +396,27 @@ const BottomTab = ({ navigation }) => {
                                     }}
                                 >
                                     <Image
-                                        source={require("../../Public/Images/profile.png")}
-                                        resizeMode="contain"
+                                        source={
+                                            focused
+                                                ? require("../../Public/Images/user.png")
+                                                : require("../../Public/Images/lightUser.png")
+                                        }
+                                        resizeMode="stretch"
                                         style={{
                                             width: 25,
                                             height: 25,
                                             tintColor: focused
                                                 ? "#386BF6"
-                                                : "white",
+                                                : "gray",
                                         }}
                                     />
                                     <CustomText
                                         style={{
-                                            color: focused
-                                                ? "#386BF6"
-                                                : "white",
-                                            fontSize: 12 * scale,
+                                            color: focused ? "#386BF6" : "gray",
+                                            fontSize: 10 * scale,
                                         }}
                                     >
-                                        Cá nhân
+                                        Tài khoản
                                     </CustomText>
                                 </View>
                             ),
@@ -410,13 +430,13 @@ const BottomTab = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     shadow: {
-        shadowColor: "#7F5DF0",
+        shadowColor: "black",
         shadowOffset: {
-            width: 0,
+            width: 10,
             height: 10,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.5,
+        shadowOpacity: 0.85,
+        shadowRadius: 9.5,
         elevation: 5,
     },
     btnLogout: {

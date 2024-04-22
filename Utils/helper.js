@@ -1,3 +1,5 @@
+import { Alert } from "react-native";
+
 export const ConvertToShortSoldQuantity = (soldQuantity) => {
     if (soldQuantity < 1000) return soldQuantity;
     var soldQtyStr = soldQuantity.toString();
@@ -35,4 +37,44 @@ export const GetFileType = (url) => {
     } else {
         return "video";
     }
+};
+
+export const ShowAlert = ({
+    title = "Confirmation",
+    alertContent = "Are you sure you want to do this?",
+    firstBtnName = "Yes",
+    secondBtnName = null,
+    handleFirstBtn = () => console.log("First Button Is Pressed"),
+    handleSecondBtn = null,
+} = {}) => {
+    const buttons = [
+        {
+            text: firstBtnName,
+            onPress: handleFirstBtn,
+        },
+    ];
+
+    if (secondBtnName)
+        buttons.push({
+            text: secondBtnName,
+            onPress: handleSecondBtn,
+        });
+
+    Alert.alert(
+        title,
+        alertContent,
+        buttons,
+        { cancelable: true } // Cho phép người dùng tắt Alert bằng cách nhấn ngoài vùng Alert
+    );
+};
+
+export const scrollToIndex = (index, scrollViewRef, item_width) => {
+    const offset = index * item_width;
+    scrollViewRef.current.scrollTo({ x: offset, y: 0, animated: true });
+};
+
+export const ShortenString = (str = "", numberOfCharacters = 10) => {
+    if (str.length > numberOfCharacters)
+        return str.substring(0, numberOfCharacters) + "...";
+    else return str.substring(0, numberOfCharacters);
 };

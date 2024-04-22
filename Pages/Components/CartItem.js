@@ -3,8 +3,14 @@ import { View, TouchableOpacity, Image } from "react-native";
 import { CustomText } from "./CustomText";
 import { IncrementCounter } from "./IncrementCounter";
 import Checkbox from "expo-checkbox";
+import { ShortenString } from "../../Utils/helper";
 
-const CartItem = ({ product, handleChangeNumber, handleCheckItem }) => {
+const CartItem = ({
+    product,
+    handleChangeNumber,
+    handleCheckItem,
+    handleDeleteItem,
+}) => {
     const [value, setValue] = useState(product.numberOfFlowers);
     useEffect(() => {
         handleChangeNumber(value);
@@ -26,7 +32,9 @@ const CartItem = ({ product, handleChangeNumber, handleCheckItem }) => {
                 }}
             />
             <View className="flex-grow justify-between">
-                <CustomText style={{ fontSize: 16 }}>{product.name}</CustomText>
+                <CustomText style={{ fontSize: 16 }}>
+                    {ShortenString(product.name, 30)}
+                </CustomText>
                 <CustomText style={{ color: "black", fontSize: 15 }}>
                     {product.unitPrice}$
                 </CustomText>
@@ -37,7 +45,10 @@ const CartItem = ({ product, handleChangeNumber, handleCheckItem }) => {
                         max={product.remainAmount}
                         showLabel={false}
                     />
-                    <TouchableOpacity className="ml-2">
+                    <TouchableOpacity
+                        className="ml-2"
+                        onPress={handleDeleteItem}
+                    >
                         <CustomText className="text-blue-400">Xoá</CustomText>
                     </TouchableOpacity>
                 </View>

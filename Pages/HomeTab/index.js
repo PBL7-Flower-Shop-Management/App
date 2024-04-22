@@ -8,7 +8,6 @@ function HomeTab() {
         <tab.Navigator screenOptions={{ headerShown: false }}>
             <tab.Screen name="Home" component={Home} />
             <tab.Screen name="FlowerDetail" component={FlowerDetail} />
-            {/*<tab.Screen name="CriminalDetail" component={CriminalDetail} /> */}
         </tab.Navigator>
     );
 }

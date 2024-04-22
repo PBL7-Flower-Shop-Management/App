@@ -43,6 +43,11 @@ export const SIZES = {
     width,
 };
 
+export const userRole = {
+    Admin: "Quản trị viên",
+    Employee: "Nhân viên",
+    Customer: "Khách hàng",
+};
 export const flowerStatus = {
     "Out of stock": "Hết hàng",
     Available: "Có sẵn",
@@ -66,43 +71,18 @@ export const ratingReview = {
     4: "Xuất sắc",
 };
 
-export const roleEnum = {
-    0: "Quản trị viên",
-    1: "Nhân viên",
-    2: "Điều tra viên",
+export const orderStatus = {
+    "Pending payment processing": "Chờ thanh toán",
+    Processing: "Đang xử lý",
+    Shipped: "Đã vận chuyển",
+    Delivered: "Đã giao",
+    Cancelled: "Huỷ",
 };
 
-export const wantedType = {
-    0: "Bình thường",
-    1: "Nguy hiểm",
-    2: "Đặc biệt",
-};
-
-export const criminalStatus = {
-    0: "Đang ngồi tù",
-    1: "Đã được thả",
-    2: "Bị truy nã",
-    3: "Chưa kết án",
-    4: "Án treo",
-    5: "Đã bị bắt",
-};
-
-export const typeOfViolation = {
-    0: "Dân sự",
-    1: "Hình sự",
-};
-
-export const gender = {
-    0: "Nữ",
-    1: "Nam",
-};
-export const caseStatus = {
-    0: "Chưa xét xử",
-    1: "Đang điều tra",
-    2: "Đã xét xử",
-};
-export const reportStatus = {
-    0: "Chưa xử lý",
-    1: "Đang xử lý",
-    2: "Đã xử lý",
+export const orderStatusIcon = {
+    "Pending payment processing": require("../Public/Images/wallet.png"),
+    Processing: require("../Public/Images/process.png"),
+    Shipped: require("../Public/Images/shipping.png"),
+    Delivered: require("../Public/Images/delivered.png"),
+    Cancelled: require("../Public/Images/cancelOrder.png"),
 };

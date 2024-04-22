@@ -13,31 +13,39 @@ import {
     flowerStatusColor,
     flowerStatusIcon,
 } from "../../Utils/constants";
+import { ShortenString } from "../../Utils/helper";
 
 const ProductList = ({ title, products, navigation }) => {
     return (
         <View>
-            <View className="flex flex-row justify-between">
-                <CustomText
-                    style={{ color: "black", fontFamily: "Be Vietnam bold" }}
-                >
-                    {title}
-                </CustomText>
-                <CustomText
-                    style={{
-                        color: "#53B6ED",
-                    }}
-                    onPress={() => Linking.openURL("https://www.facebook.com/")}
-                >
-                    Xem tất cả
-                </CustomText>
-            </View>
+            {title && (
+                <View className="flex flex-row justify-between">
+                    <CustomText
+                        style={{
+                            color: "black",
+                            fontFamily: "Be Vietnam bold",
+                        }}
+                    >
+                        {title}
+                    </CustomText>
+                    <CustomText
+                        style={{
+                            color: "#53B6ED",
+                        }}
+                        onPress={() =>
+                            Linking.openURL("https://www.facebook.com/")
+                        }
+                    >
+                        Xem tất cả
+                    </CustomText>
+                </View>
+            )}
 
             <ScrollView horizontal={true}>
                 {products.map((product, id) => {
                     return (
                         <TouchableOpacity
-                            className="flex-1 w-36 gap-y-1 bg-white border rounded-lg mr-2 mt-2 p-1"
+                            className="flex-1 w-36 gap-y-1 bg-white border border-gray-400 rounded-lg mr-2 mt-2 p-1"
                             key={id}
                             onPress={() => navigation.navigate("FlowerDetail")}
                         >
@@ -45,7 +53,9 @@ const ProductList = ({ title, products, navigation }) => {
                                 className="w-20 h-20 resize-contain self-center"
                                 source={product.imageVideoFiles}
                             ></Image>
-                            <CustomText>{product.name}</CustomText>
+                            <CustomText>
+                                {ShortenString(product.name, 20)}
+                            </CustomText>
                             <View className="flex-row items-center">
                                 <Rating
                                     className="self-start"

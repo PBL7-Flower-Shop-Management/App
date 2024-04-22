@@ -208,7 +208,7 @@ const FlowerDetail = ({ navigation, route }) => {
                             {flowerStatus[flowerInformation.status]}
                         </CustomText>
                     </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-200"></View>
+                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                     <IncrementCounter
                         value={value}
                         setValue={setValue}
@@ -234,7 +234,7 @@ const FlowerDetail = ({ navigation, route }) => {
                             </CustomText>
                         </TouchableOpacity>
                     </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-200"></View>
+                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                     <View className="p-2 gap-y-1">
                         <CustomText
                             style={{
@@ -260,7 +260,7 @@ const FlowerDetail = ({ navigation, route }) => {
                             </CustomText>
                         </View>
                     </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-200"></View>
+                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                     <View className="p-2 gap-y-1">
                         <DetailInformation
                             title="Tổng quan"

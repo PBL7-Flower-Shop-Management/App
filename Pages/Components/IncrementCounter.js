@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View, TextInput } from "react-native";
 import { CustomText } from "./CustomText";
+import { ShowAlert } from "../../Utils/helper";
 
 export const IncrementCounter = ({
     value,
@@ -25,12 +26,26 @@ export const IncrementCounter = ({
         var newValue = value + 1;
         if (newValue <= max) {
             setInput(newValue.toString());
+        } else {
+            ShowAlert({
+                title: "Cảnh báo",
+                alertContent: "Mặt hàng này chỉ còn lại " + max + " sản phẩm!",
+                firstBtnName: "Đóng",
+                handleFirstBtn: () => {},
+            });
         }
     };
     const handleDecrement = () => {
         var newValue = value - 1;
         if (newValue >= 1) {
             setInput(newValue.toString());
+        } else {
+            ShowAlert({
+                title: "Cảnh báo",
+                alertContent: "Số lượng sản phẩm mua phải lớn hơn 0!",
+                firstBtnName: "Đóng",
+                handleFirstBtn: () => {},
+            });
         }
     };
     return (

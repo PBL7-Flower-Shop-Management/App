@@ -240,7 +240,7 @@ const Home = ({ navigation, route }) => {
                     <View className="opacity-100 flex-row bg-white mt-1 pl-2">
                         <Pressable
                             onPress={() => inputRef.current.focus()}
-                            className="flex-row flex-grow w-4/5 bg-DFE0E2 text-black rounded-md items-center pl-2 py-1 border"
+                            className="flex-row flex-grow w-4/5 bg-DFE0E2 text-black rounded-md items-center pl-2 py-1 border border-gray-400"
                         >
                             <Image
                                 className="w-5 h-5 mr-2"
@@ -252,7 +252,7 @@ const Home = ({ navigation, route }) => {
                                 placeholderTextColor="gray"
                                 value={txtSearch}
                                 onChangeText={SetTxtSearch}
-                                className="flex-grow text-#5C5D60 opacity-100 border-#c9c3c3"
+                                className="w-4/5 text-#5C5D60 opacity-100 border-#c9c3c3"
                                 style={{
                                     fontSize: textInputDefaultSize * scale,
                                 }}
@@ -272,7 +272,7 @@ const Home = ({ navigation, route }) => {
                             onPress={() => setModalVisible(true)}
                         >
                             <Image
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                                 source={require("../../Public/Images/shopping-cart.png")}
                             />
                         </TouchableOpacity>
@@ -288,7 +288,7 @@ const Home = ({ navigation, route }) => {
                         navigation={navigation}
                     />
                 </View>
-                <View className="mt-5 -mx-10 h-2.5 bg-gray-300"></View>
+                <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <ProductList
                         title={"Trang trí nhà cửa"}
@@ -296,7 +296,7 @@ const Home = ({ navigation, route }) => {
                         navigation={navigation}
                     />
                 </View>
-                <View className="mt-5 -mx-10 h-2.5 bg-gray-300"></View>
+                <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <ProductList
                         title={"Làm quà tặng"}
@@ -304,21 +304,20 @@ const Home = ({ navigation, route }) => {
                         navigation={navigation}
                     />
                 </View>
-                <View className="mt-5 -mx-10 h-2.5 bg-gray-300"></View>
+                <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <FeedbackList
                         title={"Phản hồi tích cực"}
                         feedbacks={feedbackList}
                     />
                 </View>
-                <View className="mt-5 -mx-10 h-2.5 bg-gray-300"></View>
+                <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <SuggestedProductList
                         title={"Gợi ý cho bạn"}
                         products={suggestedProductList}
                     />
                 </View>
-                <View className="mb-40"></View>
             </ScrollView>
             <Cart
                 products={[

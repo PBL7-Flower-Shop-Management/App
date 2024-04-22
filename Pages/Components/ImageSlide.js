@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, ScrollView, Image } from "react-native";
+import { View, ScrollView, Image, TouchableOpacity } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { GetFileType } from "../../Utils/helper";
 import { ResizeMode, Video } from "expo-av";
 
 const ImageSlide = ({ imageList }) => {
+    const [play, setPlay] = useState(false);
     const [active, setActive] = useState(0);
     const [status, setStatus] = useState({});
     const change = ({ nativeEvent }) => {
@@ -35,18 +36,32 @@ const ImageSlide = ({ imageList }) => {
                                 className="h-80 w-56"
                             />
                         ) : (
-                            <Video
-                                className="h-80 w-56"
-                                source={{ uri: image }}
-                                useNativeControls
-                                resizeMode={ResizeMode.CONTAIN}
-                                isLooping
-                                isMuted={false}
-                                rate={1.0}
-                                volume={1.0}
-                                shouldPlay={true}
-                                onPlaybackStatusUpdate={setStatus}
-                            />
+                            <View className="bg-black justify-center items-center">
+                                <Video
+                                    className="h-80 w-56"
+                                    source={{ uri: image }}
+                                    useNativeControls
+                                    resizeMode={ResizeMode.CONTAIN}
+                                    isLooping
+                                    isMuted={false}
+                                    rate={1.0}
+                                    volume={1.0}
+                                    shouldPlay={play}
+                                    onPlaybackStatusUpdate={setStatus}
+                                />
+                                {!play && (
+                                    <TouchableOpacity
+                                        className="absolute justify-center items-center"
+                                        onPress={() => setPlay(true)}
+                                    >
+                                        <Image
+                                            className="w-14 h-14"
+                                            style={{ tintColor: "white" }}
+                                            source={require("../../Public/Images/startt.png")}
+                                        />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
                         )}
                     </View>
                 ))}
