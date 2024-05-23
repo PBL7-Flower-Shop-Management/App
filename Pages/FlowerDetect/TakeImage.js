@@ -196,9 +196,7 @@ const TakeImage = ({ navigation, route }) => {
                             }
                         />
                     </TouchableOpacity>
-                    <CustomText style={styles.title}>
-                        Nhận diện tội phạm
-                    </CustomText>
+                    <CustomText style={styles.title}>Nhận diện hoa</CustomText>
                     <TouchableOpacity
                         style={styles.btnCancel}
                         onPress={() => navigation.goBack()}

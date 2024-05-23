@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingTop: 30,
-        justifyContent: "center",
-        gap: 40,
+        paddingHorizontal: 10,
+        justifyContent: "space-between",
         backgroundColor: "black",
     },
     waitingCircle: {
