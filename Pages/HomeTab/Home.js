@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     TextInput,
     View,
@@ -7,6 +7,7 @@ import {
     Pressable,
     Image,
     ScrollView,
+    ActivityIndicator,
 } from "react-native";
 import ProductList from "../Components/ProductList.js";
 import { CustomText } from "../Components/CustomText";
@@ -14,211 +15,111 @@ import { scale, textInputDefaultSize } from "../../Utils/constants.js";
 import FeedbackList from "../Components/FeedbackList.js";
 import SuggestedProductList from "../Components/SuggestedProductList.js";
 import Cart from "../Components/Cart.js";
+import Toast from "react-native-toast-message";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
 
 const Home = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [txtSearch, SetTxtSearch] = useState(null);
     const inputRef = useRef(null);
+    const [flowerBestSeller, setFlowerBestSeller] = useState([]);
+    const [decorativeFlowers, setDecorativeFlowers] = useState([]);
+    const [flowersAsGifts, setFlowersAsGifts] = useState([]);
+    const [feedbackList, setFeedbackList] = useState([]);
+    const [suggestedProductList, setSuggestedProductList] = useState([]);
+    const [isLoading, SetIsLoading] = useState(false);
 
-    const flowerBestSeller = [
-        {
-            name: "Hoa hướng dương",
-            stars: 3.5,
-            unitPrice: 200,
-            status: "Available",
-            discount: 20,
-            imageVideoFiles: require("../../Public/Images/flower1.jpg"),
-        },
-        {
-            name: "Hoa hồng",
-            stars: 4.5,
-            unitPrice: 180,
-            status: "Available",
-            discount: 18,
-            imageVideoFiles: require("../../Public/Images/hoa-hong-1.jpg"),
-        },
-        {
-            name: "Hoa ly vàng",
-            stars: 5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            imageVideoFiles: require("../../Public/Images/hoa-ly-vang.jpg"),
-        },
-    ];
+    const getFLowerBestSeller = async () => {
+        const response = await FetchApi(
+            UrlConfig.flower.getBestSeller,
+            "GET",
+            null
+        );
 
-    const decorativeFlowers = [
-        {
-            name: "Hoa mai",
-            stars: 4,
-            unitPrice: 1200,
-            status: "Available",
-            discount: 0,
-            imageVideoFiles: require("../../Public/Images/hoa-mai.png"),
-        },
-        {
-            name: "Hoa đào",
-            stars: 2.5,
-            unitPrice: 1800,
-            status: "Out of stock",
-            discount: 18,
-            imageVideoFiles: require("../../Public/Images/hoa-dao.jpg"),
-        },
-        {
-            name: "Hoa lan",
-            stars: 4.5,
-            unitPrice: 800,
-            status: "Available",
-            discount: 10,
-            imageVideoFiles: require("../../Public/Images/hoa-lan.jpg"),
-        },
-    ];
+        if (response.succeeded) {
+            setFlowerBestSeller(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
 
-    const flowersAsGifts = [
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-    ];
+    const getDecorativeFlowers = async () => {
+        const response = await FetchApi(
+            UrlConfig.flower.getDecoration,
+            "GET",
+            null
+        );
 
-    const feedbackList = [
-        {
-            content: "Giao hàng nhanh! Chất lượng sản phẩm khá là ưng ý!!!",
-            numberOfStars: 4.5,
-            feedbackBy: "Nguyễn Thế Đăng Hoan",
-        },
-        {
-            content:
-                "Đã mua hoa rồi còn được tặng kèm cả chậu nữa, shop tận tâm thật.",
-            numberOfStars: 4,
-            feedbackBy: "Trần Thị Xuân",
-        },
-        {
-            content:
-                "Hoa shop làm rất đẹp, người yêu tôi rất thích nó, cảm ơn shop nhiều nhé!",
-            numberOfStars: 5,
-            feedbackBy: "Lê Thành Long",
-        },
-        {
-            content:
-                "Kích cỡ đa dạng lại còn vừa túi tiền nữa, k mua thì phí lắm hehe",
-            numberOfStars: 3.5,
-            feedbackBy: "Trịnh Văn Dũng",
-        },
-    ];
+        if (response.succeeded) {
+            setDecorativeFlowers(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
 
-    const suggestedProductList = [
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-    ];
+    const getFlowerAsGift = async () => {
+        const response = await FetchApi(UrlConfig.flower.getGift, "GET", null);
+
+        if (response.succeeded) {
+            setFlowersAsGifts(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
+
+    const getFeedbackList = async () => {
+        const response = await FetchApi(
+            UrlConfig.feedback.getRecentlyAll,
+            "GET",
+            null
+        );
+
+        if (response.succeeded) {
+            setFeedbackList(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
+
+    const getSuggestedProductList = async () => {
+        const response = await FetchApi(
+            UrlConfig.flower.getSuggest,
+            "GET",
+            null
+        );
+
+        if (response.succeeded) {
+            setSuggestedProductList(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
+
+    useEffect(() => {
+        SetIsLoading(true);
+        getFLowerBestSeller();
+        getDecorativeFlowers();
+        getFlowerAsGift();
+        getFeedbackList();
+        getSuggestedProductList();
+        SetIsLoading(false);
+    }, []);
 
     return (
         <View className="flex-1 bg-white">
@@ -228,6 +129,11 @@ const Home = ({ navigation, route }) => {
                 translucent
                 backgroundColor="transparent"
             />
+            {isLoading && (
+                <View style="absolute t-0 l-0 r-0 b-0 justify-center items-center">
+                    <ActivityIndicator size="large" color="green" />
+                </View>
+            )}
             <View className="px-4">
                 <View className="mt-10 w-full">
                     <CustomText className="text-blue-500">
@@ -316,6 +222,7 @@ const Home = ({ navigation, route }) => {
                     <SuggestedProductList
                         title={"Gợi ý cho bạn"}
                         products={suggestedProductList}
+                        navigation={navigation}
                     />
                 </View>
             </ScrollView>

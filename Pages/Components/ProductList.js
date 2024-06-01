@@ -47,11 +47,16 @@ const ProductList = ({ title, products, navigation }) => {
                         <TouchableOpacity
                             className="flex-1 w-36 gap-y-1 bg-white border border-gray-400 rounded-lg mr-2 mt-2 p-1"
                             key={id}
-                            onPress={() => navigation.navigate("FlowerDetail")}
+                            onPress={() =>
+                                navigation.navigate(
+                                    "FlowerDetail",
+                                    (params = { _id: product._id })
+                                )
+                            }
                         >
                             <Image
                                 className="w-20 h-20 resize-contain self-center"
-                                source={product.imageVideoFiles}
+                                source={{ uri: product.image }}
                             ></Image>
                             <CustomText>
                                 {ShortenString(product.name, 20)}

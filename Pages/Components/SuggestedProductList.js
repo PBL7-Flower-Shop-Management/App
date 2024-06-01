@@ -15,6 +15,7 @@ const SuggestedProductList = ({
     isShowSoldQuantity = true,
     betweenDistance = 10,
     paddingBottom = 40,
+    navigation,
 }) => {
     return (
         <View>
@@ -40,10 +41,18 @@ const SuggestedProductList = ({
                                     className="flex-1 w-40 gap-y-1 bg-white border border-gray-400 rounded-lg mt-2 p-1"
                                     style={{ marginEnd: betweenDistance }}
                                     key={id}
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            "FlowerDetail",
+                                            (params = {
+                                                _id: product._id,
+                                            })
+                                        )
+                                    }
                                 >
                                     <Image
                                         className="w-20 h-20 resize-contain self-center"
-                                        source={product.imageVideoFiles}
+                                        source={{ uri: product.image }}
                                     ></Image>
                                     <CustomText>
                                         {ShortenString(product.name, 20)}
@@ -132,12 +141,20 @@ const SuggestedProductList = ({
                                     <TouchableOpacity
                                         className="flex-1 w-40 gap-y-1 bg-white border border-gray-400 rounded-lg mt-2 p-1"
                                         key={id + 1}
+                                        onPress={() =>
+                                            navigation.navigate(
+                                                "FlowerDetail",
+                                                (params = {
+                                                    _id: products[id + 1]._id,
+                                                })
+                                            )
+                                        }
                                     >
                                         <Image
                                             className="w-20 h-20 resize-contain self-center"
-                                            source={
-                                                products[id + 1].imageVideoFiles
-                                            }
+                                            source={{
+                                                uri: products[id + 1].image,
+                                            }}
                                         ></Image>
                                         <CustomText>
                                             {ShortenString(

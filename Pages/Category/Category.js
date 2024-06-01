@@ -12,164 +12,46 @@ import { CustomText } from "../Components/CustomText";
 import { scale, textInputDefaultSize } from "../../Utils/constants";
 import Cart from "../Components/Cart";
 import SuggestedProductList from "../Components/SuggestedProductList";
+import Toast from "react-native-toast-message";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
 
 function Category({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [txtSearch, SetTxtSearch] = useState(null);
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(1);
+    const [categoriesWithFlowers, setCategoriesWithFlowers] = useState([]);
     const [tmpProducts, setTmpProducts] = useState([]);
     const inputRef = useRef(null);
 
-    useEffect(() => {
-        setTmpProducts(
-            products.filter(
-                (p) =>
-                    index === 0 ||
-                    p.category.includes(Object.keys(categories)[index - 1])
-            )
+    const getCategories = async () => {
+        const response = await FetchApi(
+            UrlConfig.category.getAllWithFlowers,
+            "GET",
+            null
         );
-    }, [index]);
 
-    const categories = {
-        "Hoa trồng vườn":
-            "https://th.bing.com/th/id/OIP.f-FXUJ0aDZgeT7USzI7CUgHaKW?rs=1&pid=ImgDetMain",
-        "Hoa trưng bày":
-            "https://th.bing.com/th/id/OIP.IDIBlRIRqoabOvqKdaToLgHaHg?rs=1&pid=ImgDetMain",
-        "Hoa sinh nhật":
-            "https://th.bing.com/th/id/R.1110331de5a4c5a98db02fe00f876b4e?rik=IfafVIxyoYdnLw&riu=http%3a%2f%2fhinhnenhd.com%2fwp-content%2fuploads%2f2021%2f11%2fHinh-anh-chuc-mung-sinh-nhat-dep-y-nghia-23.jpg&ehk=NiCTn3VrqMORZ1cxUpmybo4zEekg4tQQ5ozNFUeqqTg%3d&risl=&pid=ImgRaw&r=0",
-        "Hoa khai trương":
-            "https://juro.com.vn/wp-content/uploads/mau-phong-nen-khai-truong-3.jpg",
-        "Hoa cưới":
-            "https://th.bing.com/th/id/R.94ced6306675d8e8950bc8dfebb6ba00?rik=9uxw5rY1bzM0kQ&pid=ImgRaw&r=0",
-        "Hoa tốt nghiệp":
-            "https://file1.hutech.edu.vn/file/news/tot_nghiep_2-1561445014.png",
-        "Hoa tang lễ":
-            "https://static.wixstatic.com/media/9d8ed5_63efad3fb2594010bd409d19d3ef8aa0~mv2.jpg/v1/fill/w_900,h_600,al_c,q_90/9d8ed5_63efad3fb2594010bd409d19d3ef8aa0~mv2.jpg",
-        "Hoa chúc mừng":
-            "https://media.istockphoto.com/vectors/party-popper-with-confetti-vector-id1125716911?k=6&m=1125716911&s=170667a&w=0&h=2QJzLxp2RFqt96beEhaWzdHHIrLUD6FOK2h3Ns4WH0s=",
+        if (response.succeeded) {
+            setCategoriesWithFlowers(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
     };
-    const products = [
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            category: ["Hoa trồng vườn", "Hoa tốt ngiệp", "Hoa cưới"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            category: ["Hoa chúc mừng"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            category: ["Hoa sinh nhật"],
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            category: ["Hoa trồng vườn", "Hoa tốt ngiệp", "Hoa cưới"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            category: ["Hoa chúc mừng"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            category: ["Hoa sinh nhật"],
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            category: ["Hoa trồng vườn", "Hoa tốt ngiệp", "Hoa cưới"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            category: ["Hoa chúc mừng"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            category: ["Hoa sinh nhật"],
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-        {
-            name: "Đoá hoa hồng",
-            stars: 3.5,
-            unitPrice: 320,
-            status: "Available",
-            discount: 20,
-            soldQuantity: 123420,
-            category: ["Hoa trồng vườn", "Hoa tốt ngiệp", "Hoa cưới"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa-hong.jpg"),
-        },
-        {
-            name: "Bó hoa làm quà tặng",
-            stars: 3.5,
-            unitPrice: 350,
-            status: "Out of stock",
-            discount: 0,
-            soldQuantity: 299222220,
-            category: ["Hoa chúc mừng"],
-            imageVideoFiles: require("../../Public/Images/doa-hoa.jpg"),
-        },
-        {
-            name: "Hoa mừng sinh nhật",
-            stars: 3.5,
-            unitPrice: 400,
-            status: "Out of stock",
-            discount: 10,
-            soldQuantity: 1021,
-            category: ["Hoa sinh nhật"],
-            imageVideoFiles: require("../../Public/Images/hoa-sn.jpg"),
-        },
-    ];
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    useEffect(() => {
+        console.log(index);
+        console.log(categoriesWithFlowers.length > 0);
+        if (categoriesWithFlowers.length > 0)
+            setTmpProducts(categoriesWithFlowers[index - 1].flowers);
+    }, [index, categoriesWithFlowers]);
+
     return (
         <View className="flex-1 bg-white">
             {/*statusbar to set wifi, battery... to white*/}
@@ -225,38 +107,8 @@ function Category({ navigation }) {
                         className="p-0 m-0 bg-[#E2F2FF]"
                         showsVerticalScrollIndicator={false}
                     >
-                        <TouchableOpacity
-                            key={0}
-                            className="self-start bg-blue-100 p-3 items-center justify-center"
-                            onPress={() => {
-                                setIndex(0);
-                            }}
-                            style={
-                                index === 0
-                                    ? {
-                                          backgroundColor: "#F8FCFF",
-                                          borderLeftColor: "#69A5FF",
-                                          borderLeftWidth: 4,
-                                      }
-                                    : {
-                                          backgroundColor: "#E2F2FF",
-                                      }
-                            }
-                        >
-                            <View className="">
-                                <Image
-                                    className="w-12 h-12"
-                                    source={{
-                                        uri: "https://th.bing.com/th/id/R.d10f6cdbdee788fc31c200a327335357?rik=Eqo%2bzTxQDGQmbg&pid=ImgRaw&r=0",
-                                    }}
-                                />
-                            </View>
-                            <View className="w-20 items-center">
-                                <CustomText>Tất cả</CustomText>
-                            </View>
-                        </TouchableOpacity>
-                        {Object.entries(categories).map(
-                            ([category, icon], id) => (
+                        {categoriesWithFlowers.map(
+                            (categoryWithFlowers, id) => (
                                 <TouchableOpacity
                                     key={id + 1}
                                     className="self-start bg-blue-100 p-3 items-center justify-center"
@@ -278,11 +130,15 @@ function Category({ navigation }) {
                                     <View className="">
                                         <Image
                                             className="w-12 h-12"
-                                            source={{ uri: icon }}
+                                            source={{
+                                                uri: categoryWithFlowers.avatar,
+                                            }}
                                         />
                                     </View>
                                     <View className="w-20 items-center">
-                                        <CustomText>{category}</CustomText>
+                                        <CustomText>
+                                            {categoryWithFlowers.name}
+                                        </CustomText>
                                     </View>
                                 </TouchableOpacity>
                             )

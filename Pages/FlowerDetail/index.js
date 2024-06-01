@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     StatusBar,
@@ -20,86 +20,59 @@ import ReviewList from "../Components/ReviewList.js";
 import ImageSlide from "../Components/ImageSlide.js";
 import { IncrementCounter } from "../Components/IncrementCounter.js";
 import Cart from "../Components/Cart.js";
+import Toast from "react-native-toast-message";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
 
 const FlowerDetail = ({ navigation, route }) => {
     const [value, setValue] = useState(1);
     const [modalVisible, setModalVisible] = useState(false);
+    const [flowerId, setFlowerId] = useState(null);
+    const [flowerInformation, setFlowerInformation] = useState();
+    const [reviews, setReviews] = useState();
 
-    const flowerInformation = {
-        name: "Hoa Hướng Dương",
-        category: "Cây cảnh, Hoa trồng trực tiếp ngoài vườn, Hoa hàng năm",
-        origin: "Bắc Mỹ",
-        habitat: "Các vùng có khí hậu ôn đới",
-        care: "Cần nhiều ánh sáng mặt trời và tưới nước đều đặn",
-        diseasePrevention:
-            "Phòng chống sâu bệnh bằng cách kiểm tra thường xuyên và sử dụng thuốc trừ sâu khi cần",
-        growthTime: "3 tháng",
-        starsTotal: 4.5,
-        feedbacksTotal: 150,
-        unitPrice: 200,
-        discount: 20,
-        quantity: 5,
-        soldQuantity: 2,
-        description:
-            "Hoa hướng dương tượng trưng cho sự lạc quan và tinh thần vươn lên",
-        status: "Available",
-        imageVideoFiles: [
-            "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-            "https://qflower.vn/wp-content/uploads/2022/06/Bo-hoa-mat-troi-400.jpg",
-            "https://hoatuoi360.vn/uploads/file/bo-hoa-1-bong-huong-duong.jpg",
-            "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-        ],
+    const getFlowerDetail = async (flowerId) => {
+        const response = await FetchApi(
+            UrlConfig.flower.getById.replace("{id}", flowerId),
+            "GET",
+            null
+        );
+
+        if (response.succeeded) {
+            setFlowerInformation(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
     };
 
-    const reviews = [
-        {
-            content: "Giao hàng nhanh! Chất lượng sản phẩm khá là ưng ý!!!",
-            numberOfStars: 5,
-            numberOfLikes: 0,
-            feedbackBy: "Nguyễn Thế Đăng Hoan",
-            commentDate: "12/12/2024",
-            imageVideoFiles: [
-                "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-                "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-                "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-                "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-                "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-                "https://phunugioi.com/wp-content/uploads/2020/04/nhung-hinh-anh-dep-nhat-ve-hoa-huong-duong-va-y-nghia.jpg",
-            ],
-        },
-        {
-            content:
-                "Đã mua hoa rồi còn được tặng kèm cả chậu nữa, shop tận tâm thật.",
-            numberOfStars: 4,
-            numberOfLikes: 4,
-            feedbackBy: "Trần Thị Xuân",
-            commentDate: "11/07/2024",
-            imageVideoFiles: [
-                "https://qflower.vn/wp-content/uploads/2022/06/Bo-hoa-mat-troi-400.jpg",
-                "https://qflower.vn/wp-content/uploads/2022/06/Bo-hoa-mat-troi-400.jpg",
-                "https://qflower.vn/wp-content/uploads/2022/06/Bo-hoa-mat-troi-400.jpg",
-            ],
-        },
-        {
-            content:
-                "Hoa shop làm rất đẹp, người yêu tôi rất thích nó, cảm ơn shop nhiều nhé!",
-            numberOfStars: 5,
-            numberOfLikes: 2,
-            feedbackBy: "Lê Thành Long",
-            commentDate: "09/05/2024",
-        },
-        {
-            content:
-                "Kích cỡ đa dạng lại còn vừa túi tiền nữa, k mua thì phí lắm hehe",
-            numberOfStars: 3,
-            numberOfLikes: 1356,
-            feedbackBy: "Trịnh Văn Dũng",
-            commentDate: "08/03/2024",
-            imageVideoFiles: [
-                "https://hoatuoi360.vn/uploads/file/bo-hoa-1-bong-huong-duong.jpg",
-            ],
-        },
-    ];
+    const getFlowerReview = async (flowerId) => {
+        const response = await FetchApi(
+            UrlConfig.flower.getFeedbacksOfFlower.replace("{id}", flowerId),
+            "GET",
+            null
+        );
+
+        if (response.succeeded) {
+            setReviews(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (route.params?._id) {
+            setFlowerId(route.params?._id);
+            getFlowerDetail(route.params?._id);
+            getFlowerReview(route.params?._id);
+            console.log(route.params._id);
+        }
+    }, [route.params]);
 
     return (
         <View className="flex-1 bg-white">
@@ -144,159 +117,176 @@ const FlowerDetail = ({ navigation, route }) => {
                 </View>
             </View>
             <ScrollView>
-                <View className="gap-y-2 px-2">
-                    <ImageSlide imageList={flowerInformation.imageVideoFiles} />
-                    <CustomText
-                        style={{
-                            // color: "black",
-                            fontFamily: "Be Vietnam bold",
-                        }}
-                    >
-                        {flowerInformation.name}
-                    </CustomText>
-                    <View className="flex-row gap-x-1 items-center">
-                        <CustomText style={{ fontFamily: "Be Vietnam bold" }}>
-                            {flowerInformation.starsTotal}
-                        </CustomText>
-                        <Rating
-                            startingValue={flowerInformation.starsTotal}
-                            readonly={true}
-                            imageSize={15}
+                {flowerInformation && (
+                    <View className="gap-y-2 px-2">
+                        <ImageSlide
+                            imageList={flowerInformation.imageVideoFiles}
                         />
-                        <CustomText>
-                            ({flowerInformation.feedbacksTotal})
+                        <CustomText
+                            style={{
+                                // color: "black",
+                                fontFamily: "Be Vietnam bold",
+                            }}
+                        >
+                            {flowerInformation.name}
                         </CustomText>
-                        <CustomText>
-                            | Đã bán{" "}
-                            {ConvertToShortSoldQuantity(
-                                flowerInformation.soldQuantity
+                        <View className="flex-row gap-x-1 items-center">
+                            <CustomText
+                                style={{ fontFamily: "Be Vietnam bold" }}
+                            >
+                                {flowerInformation.starsTotal}
+                            </CustomText>
+                            <Rating
+                                startingValue={flowerInformation.starsTotal}
+                                readonly={true}
+                                imageSize={15}
+                            />
+                            <CustomText>
+                                ({flowerInformation.feedbacksTotal})
+                            </CustomText>
+                            <CustomText>
+                                | Đã bán{" "}
+                                {ConvertToShortSoldQuantity(
+                                    flowerInformation.soldQuantity
+                                )}
+                            </CustomText>
+                        </View>
+                        <View className="flex-row flex-grow justify-start items-end">
+                            <CustomText
+                                style={{
+                                    fontFamily: "Be Vietnam bold",
+                                }}
+                            >
+                                {flowerInformation.unitPrice}$
+                            </CustomText>
+                            {flowerInformation.discount > 0 && (
+                                <View className="bg-gray-200 rounded-md ml-1 px-1 py-0.5">
+                                    <CustomText
+                                        className="text-black"
+                                        style={{ fontSize: 10 }}
+                                    >
+                                        -{flowerInformation.discount}%
+                                    </CustomText>
+                                </View>
                             )}
-                        </CustomText>
-                    </View>
-                    <View className="flex-row flex-grow justify-start items-end">
-                        <CustomText
-                            style={{
-                                fontFamily: "Be Vietnam bold",
-                            }}
-                        >
-                            {flowerInformation.unitPrice}$
-                        </CustomText>
-                        {flowerInformation.discount > 0 && (
-                            <View className="bg-gray-200 rounded-md ml-1 px-1 py-0.5">
-                                <CustomText
-                                    className="text-black"
-                                    style={{ fontSize: 10 }}
-                                >
-                                    -{flowerInformation.discount}%
-                                </CustomText>
-                            </View>
-                        )}
-                    </View>
-                    <View
-                        className={`flex flex-row self-start items-center
+                        </View>
+                        <View
+                            className={`flex flex-row self-start items-center
                              justify-center p-0.5 rounded-md`}
-                        style={{
-                            backgroundColor:
-                                flowerStatusColor[flowerInformation.status],
-                        }}
-                    >
-                        <Image
-                            className="w-4 h-4 resize-contain"
-                            source={flowerStatusIcon[flowerInformation.status]}
-                        ></Image>
-                        <CustomText className="ml-1" style={{ fontSize: 12 }}>
-                            {flowerStatus[flowerInformation.status]}
-                        </CustomText>
-                    </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
-                    <IncrementCounter
-                        value={value}
-                        setValue={setValue}
-                        max={
-                            flowerInformation.quantity -
-                            flowerInformation.soldQuantity
-                        }
-                        unitPrice={flowerInformation.unitPrice}
-                        discount={flowerInformation.discount}
-                    />
-                    <View className="flex-row justify-between p-1 px-2">
-                        <TouchableOpacity
-                            className="bg-white border-blue-500 border p-2 px-8 rounded-md"
-                            onPress={() => setModalVisible(true)}
-                        >
-                            <CustomText className="text-blue-500">
-                                Thêm vào giỏ
-                            </CustomText>
-                        </TouchableOpacity>
-                        <TouchableOpacity className="bg-red-500 p-2 px-12 rounded-md">
-                            <CustomText className="text-white">
-                                Mua ngay
-                            </CustomText>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
-                    <View className="p-2 gap-y-1">
-                        <CustomText
                             style={{
-                                color: "black",
-                                fontFamily: "Be Vietnam bold",
+                                backgroundColor:
+                                    flowerStatusColor[flowerInformation.status],
                             }}
                         >
-                            Thông tin vận chuyển
-                        </CustomText>
-                        <View className="flex-row gap-x-1">
                             <Image
-                                className="h-4 w-4"
-                                source={require("../../Public/Images/location.png")}
+                                className="w-4 h-4 resize-contain"
+                                source={
+                                    flowerStatusIcon[flowerInformation.status]
+                                }
                             ></Image>
-                            <CustomText>Giao đến</CustomText>
+                            <CustomText
+                                className="ml-1"
+                                style={{ fontSize: 12 }}
+                            >
+                                {flowerStatus[flowerInformation.status]}
+                            </CustomText>
+                        </View>
+                        <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
+                        <IncrementCounter
+                            value={value}
+                            setValue={setValue}
+                            max={
+                                flowerInformation.quantity -
+                                flowerInformation.soldQuantity
+                            }
+                            unitPrice={flowerInformation.unitPrice}
+                            discount={flowerInformation.discount}
+                        />
+                        <View className="flex-row justify-between p-1 px-2">
+                            <TouchableOpacity
+                                className="bg-white border-blue-500 border p-2 px-8 rounded-md"
+                                onPress={() => setModalVisible(true)}
+                            >
+                                <CustomText className="text-blue-500">
+                                    Thêm vào giỏ
+                                </CustomText>
+                            </TouchableOpacity>
+                            <TouchableOpacity className="bg-red-500 p-2 px-12 rounded-md">
+                                <CustomText className="text-white">
+                                    Mua ngay
+                                </CustomText>
+                            </TouchableOpacity>
+                        </View>
+                        <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
+                        <View className="p-2 gap-y-1">
                             <CustomText
                                 style={{
                                     color: "black",
                                     fontFamily: "Be Vietnam bold",
                                 }}
                             >
-                                Q. Thanh Khê, P. An Khê, Đà Nẵng
+                                Thông tin vận chuyển
                             </CustomText>
+                            <View className="flex-row gap-x-1">
+                                <Image
+                                    className="h-4 w-4"
+                                    source={require("../../Public/Images/location.png")}
+                                ></Image>
+                                <CustomText>Giao đến</CustomText>
+                                <CustomText
+                                    style={{
+                                        color: "black",
+                                        fontFamily: "Be Vietnam bold",
+                                    }}
+                                >
+                                    Q. Thanh Khê, P. An Khê, Đà Nẵng
+                                </CustomText>
+                            </View>
                         </View>
+                        <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
+                        <View className="p-2 gap-y-1">
+                            <DetailInformation
+                                title="Tổng quan"
+                                data={{
+                                    "Danh mục": flowerInformation.category
+                                        .map((c) => c.categoryName)
+                                        .join(", "),
+                                    "Xuất sứ": flowerInformation.origin,
+                                    "Thời gian sinh trưởng":
+                                        flowerInformation.growthTime,
+                                }}
+                            />
+                        </View>
+                        <View className="p-2 gap-y-1">
+                            <Information
+                                title="Thông tin chi tiết"
+                                data={{
+                                    "Mô tả sản phẩm":
+                                        flowerInformation.description,
+                                    "Môi trường": flowerInformation.habitat,
+                                    "Cách chăm sóc": flowerInformation.care,
+                                    "Cách phòng bệnh":
+                                        flowerInformation.diseasePrevention,
+                                }}
+                            />
+                        </View>
+                        {reviews && (
+                            <View className="p-2 gap-y-1">
+                                <ReviewList
+                                    title="Khách hàng đánh giá"
+                                    overview={{
+                                        starsTotal:
+                                            flowerInformation.starsTotal,
+                                        feedbacksTotal:
+                                            flowerInformation.feedbacksTotal,
+                                    }}
+                                    reviews={reviews}
+                                />
+                            </View>
+                        )}
+                        <View className="mb-40"></View>
                     </View>
-                    <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
-                    <View className="p-2 gap-y-1">
-                        <DetailInformation
-                            title="Tổng quan"
-                            data={{
-                                "Danh mục": flowerInformation.category,
-                                "Xuất sứ": flowerInformation.origin,
-                                "Thời gian sinh trưởng":
-                                    flowerInformation.growthTime,
-                            }}
-                        />
-                    </View>
-                    <View className="p-2 gap-y-1">
-                        <Information
-                            title="Thông tin chi tiết"
-                            data={{
-                                "Mô tả sản phẩm": flowerInformation.description,
-                                "Môi trường": flowerInformation.habitat,
-                                "Cách chăm sóc": flowerInformation.care,
-                                "Cách phòng bệnh":
-                                    flowerInformation.diseasePrevention,
-                            }}
-                        />
-                    </View>
-                    <View className="p-2 gap-y-1">
-                        <ReviewList
-                            title="Khách hàng đánh giá"
-                            overview={{
-                                starsTotal: flowerInformation.starsTotal,
-                                feedbacksTotal:
-                                    flowerInformation.feedbacksTotal,
-                            }}
-                            reviews={reviews}
-                        />
-                    </View>
-                    <View className="mb-40"></View>
-                </View>
+                )}
             </ScrollView>
             <Cart
                 products={[
