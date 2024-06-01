@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView } from "react-native";
+import React from "react";
+import {
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    RefreshControl,
+} from "react-native";
 import { CustomText } from "./CustomText";
 import { Rating } from "react-native-ratings";
 import {
@@ -16,6 +22,8 @@ const SuggestedProductList = ({
     betweenDistance = 10,
     paddingBottom = 40,
     navigation,
+    refreshing,
+    onRefresh,
 }) => {
     return (
         <View>
@@ -32,7 +40,16 @@ const SuggestedProductList = ({
                 </View>
             )}
 
-            <ScrollView className="-mx-1">
+            <ScrollView
+                className="-mx-1"
+                refreshControl={
+                    <RefreshControl
+                        style={{ tintColor: "green" }}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 {products.map((product, id) => {
                     if (id % 2 === 0) {
                         return (

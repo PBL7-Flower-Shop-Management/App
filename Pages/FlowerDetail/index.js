@@ -5,6 +5,8 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
+    ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { Rating } from "react-native-ratings";
@@ -30,6 +32,8 @@ const FlowerDetail = ({ navigation, route }) => {
     const [flowerId, setFlowerId] = useState(null);
     const [flowerInformation, setFlowerInformation] = useState();
     const [reviews, setReviews] = useState();
+    const [isLoading, SetIsLoading] = useState(false);
+    const [refresh, SetRefresh] = useState(false);
 
     const getFlowerDetail = async (flowerId) => {
         const response = await FetchApi(
@@ -46,6 +50,8 @@ const FlowerDetail = ({ navigation, route }) => {
                 text1: response.message,
             });
         }
+        SetIsLoading(false);
+        SetRefresh(false);
     };
 
     const getFlowerReview = async (flowerId) => {
@@ -67,21 +73,33 @@ const FlowerDetail = ({ navigation, route }) => {
 
     useEffect(() => {
         if (route.params?._id) {
+            SetIsLoading(true);
             setFlowerId(route.params?._id);
             getFlowerDetail(route.params?._id);
             getFlowerReview(route.params?._id);
-            console.log(route.params._id);
         }
     }, [route.params]);
 
+    useEffect(() => {
+        if (refresh) {
+            getFlowerDetail(route.params?._id);
+            getFlowerReview(route.params?._id);
+        }
+    }, [refresh]);
+
     return (
-        <View className="flex-1 bg-white">
+        <View className="flex-1 bg-white" style={{ flex: 1 }}>
             {/*statusbar to set wifi, battery... to white*/}
             <StatusBar
                 barStyle="dark-content"
                 translucent
                 backgroundColor="transparent"
             />
+            {isLoading && (
+                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+                    <ActivityIndicator size="large" color="green" />
+                </View>
+            )}
             <View className="absolute z-10 top-10 flex-row w-full justify-between px-3">
                 <TouchableOpacity
                     className="p-2 bg-gray-400 rounded-full"
@@ -116,12 +134,30 @@ const FlowerDetail = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        style={{ tintColor: "green" }}
+                        refreshing={refresh}
+                        onRefresh={() => SetRefresh(true)}
+                    />
+                }
+            >
                 {flowerInformation && (
-                    <View className="gap-y-2 px-2">
-                        <ImageSlide
-                            imageList={flowerInformation.imageVideoFiles}
-                        />
+                    <View className="gap-y-2 px-2 mb-80">
+                        {flowerInformation.imageVideoFiles ? (
+                            <ImageSlide
+                                imageList={flowerInformation.imageVideoFiles}
+                            />
+                        ) : (
+                            <View className="h-2/6">
+                                <Image
+                                    className="h-full w-full"
+                                    resizeMode="contain"
+                                    source={require("../../Public/Images/default_avatar.png")}
+                                />
+                            </View>
+                        )}
                         <CustomText
                             style={{
                                 // color: "black",
@@ -289,38 +325,6 @@ const FlowerDetail = ({ navigation, route }) => {
                 )}
             </ScrollView>
             <Cart
-                products={[
-                    {
-                        id: 1,
-                        name: "Hoa hướng dương",
-                        unitPrice: 123,
-                        discount: 12,
-                        numberOfFlowers: 12,
-                        image: "https://th.bing.com/th/id/R.516e257fdf19eb76477265007bff6f68?rik=yDSJCcpSgFh0aA&riu=http%3a%2f%2fblogcaycanh.vn%2fuploads%2fcaycanh%2f1388107807_hoa-huong-duong.jpg&ehk=y1%2batE2X8bX2zrci35kvSFY7sMbTb%2fpbV5QPR6%2fQ9rI%3d&risl=&pid=ImgRaw&r=0",
-                        remainAmount: 23,
-                        selected: false,
-                    },
-                    {
-                        id: 2,
-                        name: "Hoa đào",
-                        unitPrice: 321,
-                        discount: 82,
-                        numberOfFlowers: 3,
-                        image: "https://th.bing.com/th/id/R.88c7ab37edaae90a6a87f992ec449987?rik=RCcIweKARQ%2bqLQ&pid=ImgRaw&r=0",
-                        remainAmount: 5,
-                        selected: false,
-                    },
-                    {
-                        id: 3,
-                        name: "Hoa mừng sinh nhật",
-                        unitPrice: 157,
-                        discount: 33,
-                        numberOfFlowers: 134,
-                        image: "https://th.bing.com/th/id/OIP.jd84v1WHL2uhU9Jaz1UmQAHaGA?rs=1&pid=ImgDetMain",
-                        remainAmount: 233,
-                        selected: false,
-                    },
-                ]}
                 visible={modalVisible}
                 closeModal={() => setModalVisible(false)}
             />

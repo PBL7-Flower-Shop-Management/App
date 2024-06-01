@@ -3,10 +3,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../../Context/AuthContext";
 import BottomTab from "./BottomTab.js";
-import HomeTab from "../HomeTab/index.js";
 import Login from "../Login/index.js";
 // import ForgotPassword from "../FogotPassword/index.js";
 import Splash from "../SplashScreen/SplashScreen.js";
+import ForgotPassword from "../FogotPassword/index.js";
+import ResetPassword from "../ResetPassword/index.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,12 +23,15 @@ const Navigation = () => {
                     <Stack.Screen name="Bottom" component={BottomTab} />
                 ) : (
                     <>
-                        <Stack.Screen name="Bottom" component={BottomTab} />
-                        {/* <Stack.Screen name="Home" component={HomeTab} /> */}
-                        {/* <Stack.Screen
+                        <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen
                             name="ForgotPassword"
                             component={ForgotPassword}
-                        /> */}
+                        />
+                        <Stack.Screen
+                            name="ResetPassword"
+                            component={ResetPassword}
+                        />
                     </>
                 )}
             </Stack.Navigator>

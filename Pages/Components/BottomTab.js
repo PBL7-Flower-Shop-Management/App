@@ -5,8 +5,6 @@ import {
     Image,
     TouchableOpacity,
     Dimensions,
-    Modal,
-    TouchableWithoutFeedback,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -29,7 +27,6 @@ const Tab = createBottomTabNavigator();
 const { width, height } = Dimensions.get("window");
 
 const BottomTab = ({ navigation }) => {
-    const [isWarningShow, SetIsWarningShow] = useState(false);
     const [isNavBarShow, SetIsNavBarShow] = useState(true);
     const [isNotify, SetIsNotify] = useState(false);
     const { logout, userInfo, refreshToken } = useContext(AuthContext);
@@ -83,7 +80,6 @@ const BottomTab = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => SetIsWarningShow(true)}
                         style={styles.btnLogout}
                     >
                         <Image
@@ -94,93 +90,6 @@ const BottomTab = ({ navigation }) => {
                             source={require("../../Public/Images/logout.png")}
                         />
                     </TouchableOpacity> */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={isWarningShow}
-                        onRequestClose={() => {
-                            SetIsWarningShow(!isWarningShow);
-                        }}
-                    >
-                        <TouchableWithoutFeedback
-                            onPressOut={() => SetIsWarningShow(false)}
-                        >
-                            <View style={styles.modalContainer}>
-                                <TouchableWithoutFeedback>
-                                    <View style={styles.modalView}>
-                                        <View style={styles.modalHead}>
-                                            <TouchableOpacity
-                                                style={styles.iconCancel}
-                                                onPress={() =>
-                                                    SetIsWarningShow(false)
-                                                }
-                                            >
-                                                <Image
-                                                    source={require("../../Public/Images/darkCancel.png")}
-                                                />
-                                            </TouchableOpacity>
-                                            <CustomText
-                                                style={styles.modalTitle}
-                                            >
-                                                Cảnh báo
-                                            </CustomText>
-                                        </View>
-                                        <View style={styles.modalContent}>
-                                            <CustomText
-                                                style={{
-                                                    fontSize: 14 * scale,
-                                                    width: 270,
-                                                }}
-                                            >
-                                                Bạn có chắc chắn muốn đăng xuất
-                                                không?
-                                            </CustomText>
-                                        </View>
-                                        <View
-                                            style={{
-                                                flexDirection: "row",
-                                                gap: 20,
-                                            }}
-                                        >
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    SetIsWarningShow(false);
-                                                    logout();
-                                                }}
-                                                style={styles.btnConfirm}
-                                            >
-                                                <CustomText
-                                                    style={{
-                                                        color: "white",
-                                                        fontFamily:
-                                                            "Be Vietnam bold",
-                                                    }}
-                                                >
-                                                    Đăng xuất
-                                                </CustomText>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                onPress={() =>
-                                                    SetIsWarningShow(false)
-                                                }
-                                                style={styles.btnCancel}
-                                            >
-                                                <CustomText
-                                                    style={{
-                                                        color: "#4F4F4F",
-                                                        fontFamily:
-                                                            "Be Vietnam bold",
-                                                    }}
-                                                >
-                                                    Huỷ
-                                                </CustomText>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </Modal>
                 </>
             )}
             <View

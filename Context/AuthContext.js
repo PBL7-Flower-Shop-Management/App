@@ -1,8 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
-import moment from "moment";
+import { addMinutes, isAfter } from "date-fns";
 import axios from "axios";
 import { API_URL } from "../Utils/constants.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FetchApi } from "../Utils/FetchApi.js";
+import UrlConfig from "../Config/UrlConfig.js";
 
 export const AuthContext = createContext();
 
@@ -56,71 +58,38 @@ export const AuthProvider = ({ children }) => {
             });
     };
 
-    const login = (username, password, isRememberLogin) => {
+    const login = async (username, password, isRememberLogin) => {
         SetIsLoading(true);
-        const userInfo = {};
-        SetUsername(username);
-        SetUserInfo(userInfo);
-        AsyncStorage.setItem("isRememberLogin", isRememberLogin.toString());
+        let message = "";
+        const response = await FetchApi(
+            UrlConfig.authentication.login,
+            "POST",
+            null,
+            {
+                username: username,
+                password: password,
+            }
+        );
+
+        if (response.succeeded) {
+            let userInfo = response.data.user;
+            userInfo.token = response.data.token.accessToken;
+            userInfo.refreshToken = response.data.token.refreshToken;
+            userInfo.tokenExpiryTime = response.data.token.accessTokenExpiresAt;
+            userInfo.refreshTokenExpiryTime =
+                response.data.token.refreshTokenExpireAt;
+
+            const username = response.data.user.username;
+            SetUserInfo(userInfo);
+            SetUsername(username);
+            AsyncStorage.setItem("isRememberLogin", isRememberLogin.toString());
+            message = "Login successfully!";
+        } else {
+            message = response.message;
+        }
+
         SetIsLoading(false);
-        return "Đăng nhập thành công!";
-
-        // axios
-        //     .post(API_URL + 'identity/token', {
-        //         userName: username,
-        //         password: password
-        //     })
-        //     .then(res => {
-        //         let userInfo = res.data
-        //         console.log(userInfo)
-        //         SetUserInfo(userInfo)
-        //         SetIsLoading(false)
-        //     })
-        //     .catch(e => {
-        //         console.log(`login error: ${e}`)
-        //         SetIsLoading(false)
-        //     })
-
-        // return fetch(API_URL + "identity/token", {
-        //     method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //     mode: "cors", // no-cors, cors, *same-origin
-        //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //     credentials: "same-origin", // include, *same-origin, omit
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         // 'Content-Type': 'application/x-www-form-urlencoded',
-        //     },
-        //     redirect: "follow", // manual, *follow, error
-        //     referrer: "no-referrer", // no-referrer, *client
-        //     body: JSON.stringify({ userName: username, password: password }), // body data type must match "Content-Type" header
-        // })
-        //     .then((res) => res.json())
-        //     .then((res) => {
-        //         var message = "";
-        //         if (res.succeeded) {
-        //             // let userInfo = {"access_token":res.token, "refresh_token":res.refreshToken}
-        //             // let userInfo = new UserToken(res.data)
-        //             let userInfo = res.data;
-        //             console.log(userInfo);
-        //             message = "Đăng nhập thành công!";
-        //             SetUsername(username);
-        //             SetUserInfo(userInfo);
-        //             AsyncStorage.setItem(
-        //                 "isRememberLogin",
-        //                 isRememberLogin.toString()
-        //             );
-        //         } else {
-        //             // console.log(res.messages)
-        //             message = res.messages;
-        //         }
-        //         SetIsLoading(false);
-        //         return message;
-        //     })
-        //     .catch((e) => {
-        //         console.log(`login error: ${e}`);
-        //         SetIsLoading(false);
-        //         return "Có lỗi xảy ra: " + e;
-        //     });
+        return message;
     };
 
     const logout = async () => {
@@ -177,14 +146,14 @@ export const AuthProvider = ({ children }) => {
                 return;
             } else {
                 userInfo = JSON.parse(userInfo);
-                let refreshTokenExpiryTime = moment(
-                    userInfo.refreshTokenExpiryTime,
-                    "HH:mm DD/MM/YYYY"
+                let refreshTokenExpiryTime = new Date(
+                    userInfo.refreshTokenExpiryTime
                 );
+
                 if (
                     refreshTokenExpiryTime !== undefined &&
                     refreshTokenExpiryTime !== null &&
-                    refreshTokenExpiryTime.isSameOrBefore(new Date())
+                    refreshTokenExpiryTime <= new Date()
                 ) {
                     SetSplashLoading(false);
                     SetUsername(null);
@@ -206,59 +175,64 @@ export const AuthProvider = ({ children }) => {
 
     const refreshToken = async () => {
         try {
-            let tokenExpiryTime = moment(
-                userInfo.tokenExpiryTime,
-                "HH:mm DD/MM/YYYY"
-            );
+            let tokenExpiryTime = new Date(userInfo.tokenExpiryTime);
             if (
                 tokenExpiryTime != null &&
-                tokenExpiryTime.isSameOrBefore(
-                    moment(new Date()).add(1, "minute")
-                )
+                !isAfter(tokenExpiryTime, addMinutes(new Date(), 3)) //refresh trc khi hết hạn 3 phút
             ) {
-                let refreshTokenExpiryTime = moment(
-                    userInfo.refreshTokenExpiryTime,
-                    "HH:mm DD/MM/YYYY"
+                let refreshTokenExpiryTime = new Date(
+                    userInfo.refreshTokenExpiryTime
                 );
                 if (
                     refreshTokenExpiryTime != null &&
-                    refreshTokenExpiryTime.isAfter(new Date())
+                    refreshTokenExpiryTime > new Date()
                 ) {
-                    return await fetch(API_URL + "identity/token/refresh", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
+                    const isRefreshing = AsyncStorage.getItem("isRefreshing");
+                    if (!isRefreshing) {
+                        AsyncStorage.setItem("isRefreshing", "true");
+                    } else if (isRefreshing === "true") {
+                        return {
+                            isSuccessfully: false,
+                            data: `Đang trong quá trình refresh token, vui lòng đợi vài giây!`,
+                        };
+                    }
+
+                    const response = await FetchApi(
+                        UrlConfig.authentication.refreshToken,
+                        "POST",
+                        null,
+                        {
                             token: userInfo.token,
                             refreshToken: userInfo.refreshToken,
-                        }),
-                    })
-                        .then((res) => res.json())
-                        .then((res) => {
-                            if (res.succeeded) {
-                                console.log(res);
-                                const data = res.data;
-                                SetUserInfo(data);
-                                return {
-                                    isSuccessfully: true,
-                                    data: data.token,
-                                };
-                            } else {
-                                console.log("Fail", res);
-                                return {
-                                    isSuccessfully: false,
-                                    data: `Refresh token thất bại: ${res.messages}`,
-                                };
-                            }
-                        })
-                        .catch((error) => {
-                            console.error("Lỗi khi refresh token:", error);
-                            return {
-                                isSuccessfully: false,
-                                data: `Lỗi khi refresh token: ${error}`,
-                            };
-                        });
+                        }
+                    );
+
+                    if (response.succeeded) {
+                        let userInfo = response.data.user;
+                        userInfo.token = response.data.token.accessToken;
+                        userInfo.refreshToken =
+                            response.data.token.refreshToken;
+                        userInfo.tokenExpiryTime =
+                            response.data.token.accessTokenExpiresAt;
+                        userInfo.refreshTokenExpiryTime =
+                            response.data.token.refreshTokenExpireAt;
+
+                        const username = response.data.user.username;
+                        SetUserInfo(userInfo);
+                        SetUsername(username);
+                        AsyncStorage.removeItem("isRefreshing");
+
+                        return {
+                            isSuccessfully: true,
+                            data: userInfo.token,
+                        };
+                    } else {
+                        AsyncStorage.removeItem("isRefreshing");
+                        return {
+                            isSuccessfully: false,
+                            data: `Refresh token thất bại: ${res.messages}`,
+                        };
+                    }
                 } else {
                     console.log("Refresh token hết hạn");
                     SetUsername(null);
@@ -271,6 +245,7 @@ export const AuthProvider = ({ children }) => {
             }
             return { isSuccessfully: true, data: userInfo.token };
         } catch (error) {
+            AsyncStorage.removeItem("isRefreshing");
             console.error("Lỗi khi refresh token:", error);
             return {
                 isSuccessfully: false,

@@ -7,6 +7,8 @@ import {
     Image,
     ScrollView,
     StatusBar,
+    ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { scale, textInputDefaultSize } from "../../Utils/constants";
@@ -23,6 +25,8 @@ function Category({ navigation }) {
     const [categoriesWithFlowers, setCategoriesWithFlowers] = useState([]);
     const [tmpProducts, setTmpProducts] = useState([]);
     const inputRef = useRef(null);
+    const [isLoading, SetIsLoading] = useState(false);
+    const [refresh, SetRefresh] = useState(false);
 
     const getCategories = async () => {
         const response = await FetchApi(
@@ -39,15 +43,21 @@ function Category({ navigation }) {
                 text1: response.message,
             });
         }
+        SetIsLoading(false);
+        SetRefresh(false);
+    };
+
+    const handleRefresh = () => {
+        SetRefresh(true);
+        getCategories();
     };
 
     useEffect(() => {
+        SetIsLoading(true);
         getCategories();
     }, []);
 
     useEffect(() => {
-        console.log(index);
-        console.log(categoriesWithFlowers.length > 0);
         if (categoriesWithFlowers.length > 0)
             setTmpProducts(categoriesWithFlowers[index - 1].flowers);
     }, [index, categoriesWithFlowers]);
@@ -60,6 +70,11 @@ function Category({ navigation }) {
                 translucent
                 backgroundColor="transparent"
             />
+            {isLoading && (
+                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+                    <ActivityIndicator size="large" color="green" />
+                </View>
+            )}
             <View className="opacity-100 flex-row bg-blue-400 h-20 items-end pl-4 pb-1">
                 <Pressable
                     onPress={() => inputRef.current.focus()}
@@ -106,6 +121,13 @@ function Category({ navigation }) {
                     <ScrollView
                         className="p-0 m-0 bg-[#E2F2FF]"
                         showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                style={{ tintColor: "green" }}
+                                refreshing={refresh}
+                                onRefresh={() => handleRefresh()}
+                            />
+                        }
                     >
                         {categoriesWithFlowers.map(
                             (categoryWithFlowers, id) => (
@@ -155,6 +177,9 @@ function Category({ navigation }) {
                             isShowSoldQuantity={false}
                             betweenDistance={5}
                             paddingBottom={52}
+                            navigation={navigation}
+                            refreshing={refresh}
+                            onRefresh={() => handleRefresh()}
                         />
                     ) : (
                         <View className="flex-grow gap-y-3 items-center justify-center">
@@ -171,38 +196,6 @@ function Category({ navigation }) {
                 </View>
             </View>
             <Cart
-                products={[
-                    {
-                        id: 1,
-                        name: "Hoa hướng dương",
-                        unitPrice: 123,
-                        discount: 12,
-                        numberOfFlowers: 12,
-                        image: "https://th.bing.com/th/id/R.516e257fdf19eb76477265007bff6f68?rik=yDSJCcpSgFh0aA&riu=http%3a%2f%2fblogcaycanh.vn%2fuploads%2fcaycanh%2f1388107807_hoa-huong-duong.jpg&ehk=y1%2batE2X8bX2zrci35kvSFY7sMbTb%2fpbV5QPR6%2fQ9rI%3d&risl=&pid=ImgRaw&r=0",
-                        remainAmount: 23,
-                        selected: false,
-                    },
-                    {
-                        id: 2,
-                        name: "Hoa đào",
-                        unitPrice: 321,
-                        discount: 82,
-                        numberOfFlowers: 3,
-                        image: "https://th.bing.com/th/id/R.88c7ab37edaae90a6a87f992ec449987?rik=RCcIweKARQ%2bqLQ&pid=ImgRaw&r=0",
-                        remainAmount: 5,
-                        selected: false,
-                    },
-                    {
-                        id: 3,
-                        name: "Hoa mừng sinh nhật",
-                        unitPrice: 157,
-                        discount: 33,
-                        numberOfFlowers: 134,
-                        image: "https://th.bing.com/th/id/OIP.jd84v1WHL2uhU9Jaz1UmQAHaGA?rs=1&pid=ImgDetMain",
-                        remainAmount: 233,
-                        selected: false,
-                    },
-                ]}
                 visible={modalVisible}
                 closeModal={() => setModalVisible(false)}
             />

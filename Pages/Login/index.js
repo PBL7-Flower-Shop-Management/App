@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
-    Linking,
     View,
     TouchableOpacity,
     TextInput,
@@ -45,10 +44,10 @@ const Login = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        if (route.params?.forgotSuccess) {
+        if (route.params?.resetSuccess) {
             Toast.show({
                 type: "success",
-                text1: "Hệ thống đã gửi thông tin thiết lập mật khẩu đến email của bạn! Hãy kiểm tra email và làm theo hướng dẫn!",
+                text1: "Reset your password successfully! Let's login!",
             });
         }
     }, [route.params]);
@@ -86,31 +85,31 @@ const Login = ({ navigation, route }) => {
                 )}
                 <View style={styles.head}>
                     <CustomText style={styles.title}>
-                        Quản lý{"\n"}tội phạm
+                        Flower shopping
                     </CustomText>
                     <CustomText style={styles.subtitle}>
-                        CA Quảng Nam
+                        Best price, best flower
                     </CustomText>
                 </View>
                 <View style={styles.body}>
                     <View style={styles.textInput}>
                         <CustomText style={{ width: 115 }}>
-                            Tên đăng nhập:
+                            Username:
                         </CustomText>
                         <TextInput
                             style={styles.input}
-                            placeholder="Tên đăng nhập"
+                            placeholder="Username"
                             value={username}
                             onChangeText={SetUsername}
                         ></TextInput>
                     </View>
                     <View style={styles.textInput}>
                         <CustomText style={{ width: 115 }}>
-                            Mật khẩu:
+                            Password:
                         </CustomText>
                         <TextInput
                             style={[styles.input, { paddingRight: 38 }]}
-                            placeholder="Mật khẩu"
+                            placeholder="Password"
                             value={password}
                             onChangeText={SetPassword}
                             secureTextEntry={!showPwd}
@@ -151,7 +150,7 @@ const Login = ({ navigation, route }) => {
                             onValueChange={SetRememberLogin}
                             style={{ borderColor: "#DFE0E2", borderRadius: 3 }}
                         />
-                        <CustomText> Ghi nhớ đăng nhập</CustomText>
+                        <CustomText> Remember me</CustomText>
                     </Pressable>
                     <View style={{ gap: 14 }}>
                         <TouchableOpacity
@@ -168,10 +167,10 @@ const Login = ({ navigation, route }) => {
                             style={styles.btnLogin}
                         >
                             <CustomText style={styles.txtLogin}>
-                                Đăng nhập
+                                Login
                             </CustomText>
                         </TouchableOpacity>
-                        {/* <CustomText
+                        <CustomText
                             style={{
                                 color: "#53B6ED",
                                 textDecorationLine: "underline",
@@ -181,28 +180,8 @@ const Login = ({ navigation, route }) => {
                                 navigation.navigate("ForgotPassword")
                             }
                         >
-                            Quên mật khẩu?
-                        </CustomText> */}
-                    </View>
-                </View>
-                <View style={styles.foot}>
-                    <View style={styles.footContent}>
-                        {/* <CustomText>
-                            Cần sự giúp đỡ? Liên hệ{" "}
-                            <CustomText
-                                style={{
-                                    color: "#53B6ED",
-                                    textDecorationLine: "underline",
-                                }}
-                                onPress={() =>
-                                    Linking.openURL(
-                                        "https://www.facebook.com/maeveofmay"
-                                    )
-                                }
-                            >
-                                Thanh Nhàn
-                            </CustomText>
-                        </CustomText> */}
+                            Forgot password?
+                        </CustomText>
                     </View>
                 </View>
             </View>

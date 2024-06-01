@@ -98,7 +98,7 @@ export const IncrementCounter = ({
                     </TouchableOpacity>
                 </View>
             </View>
-            {unitPrice && (
+            {unitPrice !== undefined && unitPrice !== null && (
                 <View>
                     {showLabel && (
                         <CustomText

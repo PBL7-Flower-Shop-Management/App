@@ -14,11 +14,11 @@ export const FetchApi = async (
         credentials: "same-origin", // include, *same-origin, omit
         headers: hasFormData
             ? {
-                  Authorization: token,
+                  Authorization: "Bearer " + token,
               }
             : {
                   "Content-Type": "application/json",
-                  Authorization: token,
+                  Authorization: "Bearer " + token,
               },
         redirect: "follow", // manual, *follow, error
         referrer: "no-referrer", // no-referrer, *client

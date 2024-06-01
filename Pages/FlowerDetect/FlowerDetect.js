@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
-import { Camera, CameraType, FlashMode } from "expo-camera";
+import { Camera, CameraType, FlashMode } from "expo-camera/legacy";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { toastConfig } from "../Components/ToastConfig.js";

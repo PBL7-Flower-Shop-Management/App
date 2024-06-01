@@ -6,7 +6,7 @@ import {
     TouchableWithoutFeedback,
     ScrollView,
 } from "react-native";
-import { Camera, CameraType, FlashMode } from "expo-camera";
+import { Camera, CameraType, FlashMode } from "expo-camera/legacy";
 import { PinchGestureHandler, State } from "react-native-gesture-handler";
 import { CustomText } from "../Components/CustomText.js";
 import * as ImagePicker from "expo-image-picker";

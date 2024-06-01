@@ -8,6 +8,7 @@ import {
     Image,
     ScrollView,
     ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import ProductList from "../Components/ProductList.js";
 import { CustomText } from "../Components/CustomText";
@@ -29,6 +30,7 @@ const Home = ({ navigation, route }) => {
     const [feedbackList, setFeedbackList] = useState([]);
     const [suggestedProductList, setSuggestedProductList] = useState([]);
     const [isLoading, SetIsLoading] = useState(false);
+    const [refresh, SetRefresh] = useState(false);
 
     const getFLowerBestSeller = async () => {
         const response = await FetchApi(
@@ -75,6 +77,8 @@ const Home = ({ navigation, route }) => {
                 text1: response.message,
             });
         }
+        SetIsLoading(false);
+        SetRefresh(false);
     };
 
     const getFeedbackList = async () => {
@@ -111,15 +115,24 @@ const Home = ({ navigation, route }) => {
         }
     };
 
-    useEffect(() => {
-        SetIsLoading(true);
+    const getAllDataFromApi = () => {
         getFLowerBestSeller();
         getDecorativeFlowers();
         getFlowerAsGift();
         getFeedbackList();
         getSuggestedProductList();
-        SetIsLoading(false);
+    };
+
+    useEffect(() => {
+        SetIsLoading(true);
+        getAllDataFromApi();
     }, []);
+
+    useEffect(() => {
+        if (refresh) {
+            getAllDataFromApi();
+        }
+    }, [refresh]);
 
     return (
         <View className="flex-1 bg-white">
@@ -130,7 +143,7 @@ const Home = ({ navigation, route }) => {
                 backgroundColor="transparent"
             />
             {isLoading && (
-                <View style="absolute t-0 l-0 r-0 b-0 justify-center items-center">
+                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
                     <ActivityIndicator size="large" color="green" />
                 </View>
             )}
@@ -186,7 +199,16 @@ const Home = ({ navigation, route }) => {
                 </View>
             </View>
 
-            <ScrollView className="px-4 mt-5">
+            <ScrollView
+                className="px-4 mt-5"
+                refreshControl={
+                    <RefreshControl
+                        style={{ tintColor: "green" }}
+                        refreshing={refresh}
+                        onRefresh={() => SetRefresh(true)}
+                    />
+                }
+            >
                 <View className="">
                     <ProductList
                         title={"Bán chạy nhất"}
@@ -227,38 +249,6 @@ const Home = ({ navigation, route }) => {
                 </View>
             </ScrollView>
             <Cart
-                products={[
-                    {
-                        id: 1,
-                        name: "Hoa hướng dương",
-                        unitPrice: 123,
-                        discount: 12,
-                        numberOfFlowers: 12,
-                        image: "https://th.bing.com/th/id/R.516e257fdf19eb76477265007bff6f68?rik=yDSJCcpSgFh0aA&riu=http%3a%2f%2fblogcaycanh.vn%2fuploads%2fcaycanh%2f1388107807_hoa-huong-duong.jpg&ehk=y1%2batE2X8bX2zrci35kvSFY7sMbTb%2fpbV5QPR6%2fQ9rI%3d&risl=&pid=ImgRaw&r=0",
-                        remainAmount: 23,
-                        selected: false,
-                    },
-                    {
-                        id: 2,
-                        name: "Hoa đào",
-                        unitPrice: 321,
-                        discount: 82,
-                        numberOfFlowers: 3,
-                        image: "https://th.bing.com/th/id/R.88c7ab37edaae90a6a87f992ec449987?rik=RCcIweKARQ%2bqLQ&pid=ImgRaw&r=0",
-                        remainAmount: 5,
-                        selected: false,
-                    },
-                    {
-                        id: 3,
-                        name: "Hoa mừng sinh nhật",
-                        unitPrice: 157,
-                        discount: 33,
-                        numberOfFlowers: 134,
-                        image: "https://th.bing.com/th/id/OIP.jd84v1WHL2uhU9Jaz1UmQAHaGA?rs=1&pid=ImgDetMain",
-                        remainAmount: 233,
-                        selected: false,
-                    },
-                ]}
                 visible={modalVisible}
                 closeModal={() => setModalVisible(false)}
             />

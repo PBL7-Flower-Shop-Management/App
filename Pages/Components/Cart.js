@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     View,
     ScrollView,
@@ -8,17 +8,26 @@ import {
     Platform,
     Modal,
     Image,
+    ActivityIndicator,
+    Button,
 } from "react-native";
 import { CustomText } from "./CustomText";
 import CartItem from "./CartItem";
 import Checkbox from "expo-checkbox";
 import { ShowAlert } from "../../Utils/helper";
+import Toast from "react-native-toast-message";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
+import { AuthContext } from "../../Context/AuthContext.js";
+import { toastConfig } from "../Components/ToastConfig.js";
 
-const Cart = ({ products, visible, closeModal }) => {
-    const [listCart, setListCart] = useState(products);
+const Cart = ({ visible, closeModal }) => {
+    const { refreshToken } = useContext(AuthContext);
+    const [listCart, setListCart] = useState([]);
     const [selectedCart, setSelectedCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [isCheckAll, setIsCheckAll] = useState(false);
+    const [isLoading, SetIsLoading] = useState(false);
 
     const handleChangeAmount = (id, value) => {
         var newListCart = listCart.map((i) => {
@@ -116,6 +125,36 @@ const Cart = ({ products, visible, closeModal }) => {
         );
     };
 
+    const getCarts = async () => {
+        SetIsLoading(true);
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        const response = await FetchApi(
+            UrlConfig.user.getCarts,
+            "GET",
+            result.data
+        );
+
+        console.log(response);
+        if (response.succeeded) {
+            setListCart(response.data);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+        SetIsLoading(false);
+    };
+
     useEffect(() => {
         var newSelectedCart = listCart.filter((item) => item.selected);
         if (newSelectedCart.length < listCart.length) setIsCheckAll(false);
@@ -127,6 +166,10 @@ const Cart = ({ products, visible, closeModal }) => {
         calculateTotalPrice();
         if (selectedCart.length === 0) setIsCheckAll(false);
     }, [selectedCart]);
+
+    useEffect(() => {
+        getCarts();
+    }, []);
 
     return (
         <Modal visible={visible} animationType="slide">
@@ -141,6 +184,11 @@ const Cart = ({ products, visible, closeModal }) => {
                         translucent
                         backgroundColor="transparent"
                     />
+                    {isLoading && (
+                        <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+                            <ActivityIndicator size="large" color="green" />
+                        </View>
+                    )}
                     <View className="flex-row mt-10 items-center justify-center">
                         <TouchableOpacity
                             className="absolute z-10 left-2"
@@ -237,10 +285,12 @@ const Cart = ({ products, visible, closeModal }) => {
                             <CustomText>
                                 Chưa có sản phẩm nào được thêm vào giỏ hàng!
                             </CustomText>
+                            <Button title="reload" onPress={() => getCarts()} />
                         </>
                     )}
                 </View>
             </KeyboardAvoidingView>
+            <Toast config={toastConfig} />
         </Modal>
     );
 };
