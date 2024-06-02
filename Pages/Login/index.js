@@ -18,7 +18,13 @@ import { AuthContext } from "../../Context/AuthContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation, route }) => {
-    const { isLoading, login } = useContext(AuthContext);
+    const {
+        isLoading,
+        login,
+        request,
+        message: googleMessage,
+        googleLogin,
+    } = useContext(AuthContext);
 
     const [username, SetUsername] = useState("");
     const [password, SetPassword] = useState("");
@@ -51,6 +57,11 @@ const Login = ({ navigation, route }) => {
             });
         }
     }, [route.params]);
+
+    useEffect(() => {
+        SetMessage(googleMessage);
+    }, [googleMessage]);
+
     const checkLogic = () => {
         if (
             username == null ||
@@ -170,6 +181,21 @@ const Login = ({ navigation, route }) => {
                                 Login
                             </CustomText>
                         </TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={!request}
+                            onPress={async () => {
+                                await googleLogin();
+                            }}
+                            style={styles.btnLoginWithGoogle}
+                        >
+                            <Image
+                                className="w-5 h-5"
+                                source={require("../../Public/Images/google.png")}
+                            />
+                            <CustomText style={styles.txtLoginWithGoogle}>
+                                Login with google
+                            </CustomText>
+                        </TouchableOpacity>
                         <CustomText
                             style={{
                                 color: "#53B6ED",
@@ -181,6 +207,16 @@ const Login = ({ navigation, route }) => {
                             }
                         >
                             Forgot password?
+                        </CustomText>
+                        <CustomText
+                            style={{
+                                color: "#53B6ED",
+                                textDecorationLine: "underline",
+                                alignSelf: "flex-end",
+                            }}
+                            onPress={() => navigation.navigate("Register")}
+                        >
+                            Don't have an account yet?
                         </CustomText>
                     </View>
                 </View>

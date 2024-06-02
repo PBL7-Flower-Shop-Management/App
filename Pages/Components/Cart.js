@@ -143,7 +143,6 @@ const Cart = ({ visible, closeModal }) => {
             result.data
         );
 
-        console.log(response);
         if (response.succeeded) {
             setListCart(response.data);
         } else {

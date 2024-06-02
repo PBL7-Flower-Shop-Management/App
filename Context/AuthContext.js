@@ -5,8 +5,13 @@ import { API_URL } from "../Utils/constants.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FetchApi } from "../Utils/FetchApi.js";
 import UrlConfig from "../Config/UrlConfig.js";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google.js";
+import { ResponseType } from "expo-auth-session";
 
 export const AuthContext = createContext();
+
+WebBrowser.maybeCompleteAuthSession();
 
 export const AuthProvider = ({ children }) => {
     const [isFirst, SetIsFirst] = useState(true);
@@ -14,6 +19,28 @@ export const AuthProvider = ({ children }) => {
     const [userInfo, SetUserInfo] = useState(null);
     const [isLoading, SetIsLoading] = useState(false);
     const [splashLoading, SetSplashLoading] = useState(false);
+
+    const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+        clientId:
+            "471873188950-ag1117jeje29otsdbjhvt2gg304h9m7u.apps.googleusercontent.com",
+        iosClientId:
+            "471873188950-h3uuv48rtjnq3247jdp3f1o09isufju9.apps.googleusercontent.com",
+        androidClientId:
+            "471873188950-s00cju1jddoofngml7tton6ck9q31uk5.apps.googleusercontent.com",
+        redirectUri: "com.danghoanexpo.Mobile:/",
+        scopes: ["profile", "email"],
+        responseType: ResponseType.IdToken,
+    });
+    const [accessToken, setAccessToken] = useState();
+    const [message, SetMessage] = useState("");
+
+    useEffect(() => {
+        if (response?.type === "success") {
+            const { id_token } = response.params;
+            setAccessToken(id_token);
+            accessToken && handleGoogleLogin();
+        }
+    }, [response, accessToken]);
 
     useEffect(() => {
         const setItem = async () => {
@@ -92,20 +119,51 @@ export const AuthProvider = ({ children }) => {
         return message;
     };
 
+    const googleLogin = async () => await promptAsync();
+
+    const handleGoogleLogin = async () => {
+        SetIsLoading(true);
+        let message = "";
+        const response = await FetchApi(
+            UrlConfig.authentication.google,
+            "POST",
+            null,
+            { accessToken }
+        );
+
+        if (response.succeeded) {
+            let userInfo = response.data.user;
+            userInfo.token = response.data.token.accessToken;
+            userInfo.refreshToken = response.data.token.refreshToken;
+            userInfo.tokenExpiryTime = response.data.token.accessTokenExpiresAt;
+            userInfo.refreshTokenExpiryTime =
+                response.data.token.refreshTokenExpireAt;
+
+            const username = response.data.user.username;
+            SetUserInfo(userInfo);
+            SetUsername(username);
+            AsyncStorage.setItem("isRememberLogin", isRememberLogin.toString());
+            message = "Login successfully!";
+        } else {
+            message = response.message;
+        }
+
+        SetIsLoading(false);
+        SetMessage(message);
+    };
+
     const logout = async () => {
+        SetIsLoading(true);
         let isRememberLogin = await AsyncStorage.getItem("isRememberLogin");
         if (
             isRememberLogin == null ||
             isRememberLogin.toLowerCase() == "false"
         ) {
-            SetIsLoading(true);
-
             SetUsername(null);
-
-            SetIsLoading(false);
         }
         SetUsername(null);
         SetUserInfo(null);
+        SetIsLoading(false);
         // axios.post(API_URL + '/logout',
         // {},
         // {
@@ -246,7 +304,7 @@ export const AuthProvider = ({ children }) => {
             return { isSuccessfully: true, data: userInfo.token };
         } catch (error) {
             AsyncStorage.removeItem("isRefreshing");
-            console.error("Lỗi khi refresh token:", error);
+            console.log("Lỗi khi refresh token:", error);
             return {
                 isSuccessfully: false,
                 data: `Lỗi khi refresh token: ${error}`,
@@ -262,11 +320,14 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 isLoading,
+                request,
+                message,
                 username,
                 userInfo,
                 splashLoading,
                 register,
                 login,
+                googleLogin,
                 logout,
                 refreshToken,
             }}
