@@ -27,6 +27,7 @@ export const ConvertToShortSoldQuantity = (soldQuantity) => {
 
 export const GetFileType = (url) => {
     if (!url) return "image";
+    if (typeof url !== "string") return "image";
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
     const imageExtensions = ["jpg", "png", "gif", "jpeg"]; // Additional image extensions
     const videoExtensions = ["mp3", "mp4", "mpeg"]; // Additional video extensions

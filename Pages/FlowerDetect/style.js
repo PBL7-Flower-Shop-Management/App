@@ -97,7 +97,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 50,
         width: "100%",
-        paddingHorizontal: 15,
     },
     avatar: {
         width: 260,

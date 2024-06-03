@@ -46,6 +46,7 @@ const UrlConfig = {
         deleteMultiple: "/api/flower",
         getSuggest: "/api/flower/suggest",
     },
+    identification: { classifyFlower: "/api/identification" },
     order: {
         getById: "/api/order/{id}",
         delete: "/api/order/{id}",

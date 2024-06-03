@@ -5,12 +5,13 @@ import Toast from "react-native-toast-message";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { toastConfig } from "../Components/ToastConfig.js";
 import { CustomText } from "../Components/CustomText.js";
-import { API_URL } from "../../Utils/constants.js";
 import styles from "./style.js";
 import ScanAnimation from "../Components/ScanAnimation.js";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
 
 const FlowerDetect = ({ navigation, route }) => {
-    const { userInfo } = useContext(AuthContext);
+    const { refreshToken } = useContext(AuthContext);
 
     useEffect(() => {
         if (route.params?.type) {
@@ -38,103 +39,48 @@ const FlowerDetect = ({ navigation, route }) => {
         );
     };
 
-    const detectImage = () => {
+    const detectImage = async () => {
         SetIsLoading(true);
         SetIsShowAnimated(true);
         SetDetectDisabled(true);
-        const formData = new FormData();
-        formData.append("CriminalImage", image);
 
-        if (userInfo != null)
-            fetch(API_URL + "v1/face-detect/detect", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${userInfo.token}`,
-                },
-                redirect: "follow", // manual, *follow, error
-                referrer: "no-referrer", // no-referrer, *client
-                body: formData, // body data type must match "Content-Type" header
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.succeeded) {
-                        if (res.messages !== null && res.messages.length > 0) {
-                            res.messages.forEach((message) => {
-                                Toast.show({
-                                    type: "info",
-                                    text1: message,
-                                });
-                            });
-                            SetIsShowAnimated(false);
-                            SetDetectDisabled(false);
-                            SetIsLoading(false);
-                            return;
-                        }
-                        if (res.data.canPredict)
-                            navigation.navigate(
-                                "SuccessDetect",
-                                (params = {
-                                    result: res.data,
-                                })
-                            );
-                        else
-                            navigation.navigate(
-                                "FailDetect",
-                                (params = {
-                                    result: res.data,
-                                })
-                            );
-                    } else {
-                        Toast.show({
-                            type: "info",
-                            text1:
-                                res.messages != null
-                                    ? res.messages
-                                    : res.title
-                                    ? res.title
-                                    : res,
-                        });
-                    }
-                    SetIsShowAnimated(false);
-                    SetDetectDisabled(false);
-                    SetIsLoading(false);
-                })
-                .catch((e) => {
-                    console.log(`login error: ${e}`);
-                    SetIsLoading(false);
-                    SetIsShowAnimated(false);
-                    SetDetectDisabled(false);
-                    Toast.show({
-                        type: "error",
-                        text1: "Có lỗi xảy ra: " + e,
-                    });
-                });
-        else {
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
             Toast.show({
                 type: "error",
-                text1: "Không có quyền truy cập",
+                text1: result.data,
             });
-            SetIsLoading(false);
-            SetIsShowAnimated(false);
-            SetDetectDisabled(false);
-        }
-    };
+        } else {
+            const formData = new FormData();
+            formData.append("flowerImage", image);
 
-    // fetch(API_URL+'getImage')
-    //     .then(response => response.blob())
-    //     .then(blob => {
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(blob);
-    //         reader.onloadend = () => {
-    //             const base64data = reader.result;
-    //             // setImage(base64data);
-    //         };
-    //     });
+            const response = await FetchApi(
+                UrlConfig.identification.classifyFlower,
+                "POST",
+                result.data,
+                formData,
+                true
+            );
+
+            if (response.succeeded) {
+                navigation.navigate(
+                    "SuccessDetect",
+                    (params = {
+                        result: response.data,
+                    })
+                );
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: response.message,
+                });
+            }
+        }
+
+        SetIsLoading(false);
+        SetIsShowAnimated(false);
+        SetDetectDisabled(false);
+    };
 
     return (
         <View style={styles.container}>
@@ -182,8 +128,8 @@ const FlowerDetect = ({ navigation, route }) => {
                 <View style={[styles.bodyFoot, { gap: 100 }]}>
                     <TouchableOpacity
                         style={styles.btnDetectImage}
-                        onPress={() => {
-                            detectImage();
+                        onPress={async () => {
+                            await detectImage();
                         }}
                         disabled={detectDisabled}
                     >
