@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
     View,
     TouchableOpacity,
@@ -12,14 +12,14 @@ import {
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { scale, textInputDefaultSize } from "../../Utils/constants";
-import Cart from "../Components/Cart";
 import SuggestedProductList from "../Components/SuggestedProductList";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "../Components/ToastConfig.js";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
+import { CartContext } from "../../Context/CartContext.js";
 
 function Category({ navigation }) {
-    const [modalVisible, setModalVisible] = useState(false);
     const [txtSearch, SetTxtSearch] = useState(null);
     const [index, setIndex] = useState(1);
     const [categoriesWithFlowers, setCategoriesWithFlowers] = useState([]);
@@ -27,6 +27,7 @@ function Category({ navigation }) {
     const inputRef = useRef(null);
     const [isLoading, SetIsLoading] = useState(false);
     const [refresh, SetRefresh] = useState(false);
+    const { setCartVisible } = useContext(CartContext);
 
     const getCategories = async () => {
         const response = await FetchApi(
@@ -97,7 +98,7 @@ function Category({ navigation }) {
                     ></TextInput>
                     <TouchableOpacity
                         className="p-1 flex-row flex-end"
-                        // onPress={() => SetModalVisible(true)}
+                        // onPress={() => setCartVisible(true)}
                     >
                         <Image
                             className="h-5 w-5"
@@ -107,7 +108,7 @@ function Category({ navigation }) {
                 </Pressable>
                 <TouchableOpacity
                     className="w-10 p-1 flex-grow items-center justify-center"
-                    onPress={() => setModalVisible(true)}
+                    onPress={() => setCartVisible(true)}
                 >
                     <Image
                         className="h-6 w-6"
@@ -195,10 +196,7 @@ function Category({ navigation }) {
                     )}
                 </View>
             </View>
-            <Cart
-                visible={modalVisible}
-                closeModal={() => setModalVisible(false)}
-            />
+            <Toast config={toastConfig} />
         </View>
     );
 }

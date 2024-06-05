@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     View,
     StatusBar,
@@ -21,19 +21,20 @@ import Information from "../Components/Information.js";
 import ReviewList from "../Components/ReviewList.js";
 import ImageSlide from "../Components/ImageSlide.js";
 import { IncrementCounter } from "../Components/IncrementCounter.js";
-import Cart from "../Components/Cart.js";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "../Components/ToastConfig.js";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
+import { CartContext } from "../../Context/CartContext.js";
 
 const FlowerDetail = ({ navigation, route }) => {
     const [value, setValue] = useState(1);
-    const [modalVisible, setModalVisible] = useState(false);
     const [flowerId, setFlowerId] = useState(null);
     const [flowerInformation, setFlowerInformation] = useState();
     const [reviews, setReviews] = useState();
     const [isLoading, SetIsLoading] = useState(false);
     const [refresh, SetRefresh] = useState(false);
+    const { setCartVisible } = useContext(CartContext);
 
     const getFlowerDetail = async (flowerId) => {
         const response = await FetchApi(
@@ -100,8 +101,9 @@ const FlowerDetail = ({ navigation, route }) => {
                     <ActivityIndicator size="large" color="green" />
                 </View>
             )}
-            <View className="absolute z-10 top-10 flex-row w-full justify-between px-3">
+            <View className="flex-row justify-between pt-12 pb-3 px-2 bg-transparent">
                 <TouchableOpacity
+                    // className="p-2 bg-gray-400 rounded-full"
                     className="p-2 bg-gray-400 rounded-full"
                     onPress={() => navigation.goBack()}
                 >
@@ -111,10 +113,10 @@ const FlowerDetail = ({ navigation, route }) => {
                         source={require("../../Public/Images/leftArrow.png")}
                     />
                 </TouchableOpacity>
-                <View className="flex-row gap-x-1">
+                <View className="flex-row gap-x-1 bg-transparent">
                     <TouchableOpacity
                         className="p-2 bg-gray-400 rounded-full"
-                        onPress={() => setModalVisible(true)}
+                        onPress={() => setCartVisible(true)}
                     >
                         <Image
                             className="h-5 w-5"
@@ -124,7 +126,7 @@ const FlowerDetail = ({ navigation, route }) => {
                     </TouchableOpacity>
                     <TouchableOpacity
                         className="p-2 bg-gray-400 rounded-full"
-                        // onPress={() => SetModalVisible(true)}
+                        // onPress={() => setCartVisible(true)}
                     >
                         <Image
                             className="h-5 w-5"
@@ -147,7 +149,9 @@ const FlowerDetail = ({ navigation, route }) => {
                     <View className="gap-y-2 px-2 mb-80">
                         {flowerInformation.imageVideoFiles ? (
                             <ImageSlide
-                                imageList={flowerInformation.imageVideoFiles}
+                                imageList={flowerInformation.imageVideoFiles.map(
+                                    (image) => image.url
+                                )}
                             />
                         ) : (
                             <View className="h-2/6">
@@ -241,7 +245,7 @@ const FlowerDetail = ({ navigation, route }) => {
                         <View className="flex-row justify-between p-1 px-2">
                             <TouchableOpacity
                                 className="bg-white border-blue-500 border p-2 px-8 rounded-md"
-                                onPress={() => setModalVisible(true)}
+                                onPress={() => setCartVisible(true)}
                             >
                                 <CustomText className="text-blue-500">
                                     Thêm vào giỏ
@@ -324,10 +328,7 @@ const FlowerDetail = ({ navigation, route }) => {
                     </View>
                 )}
             </ScrollView>
-            <Cart
-                visible={modalVisible}
-                closeModal={() => setModalVisible(false)}
-            />
+            <Toast config={toastConfig} />
         </View>
     );
 };

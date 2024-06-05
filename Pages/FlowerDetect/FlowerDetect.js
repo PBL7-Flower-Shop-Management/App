@@ -11,7 +11,7 @@ import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
 
 const FlowerDetect = ({ navigation, route }) => {
-    const { refreshToken } = useContext(AuthContext);
+    const { refreshToken, userInfo } = useContext(AuthContext);
 
     useEffect(() => {
         if (route.params?.type) {
@@ -44,37 +44,43 @@ const FlowerDetect = ({ navigation, route }) => {
         SetIsShowAnimated(true);
         SetDetectDisabled(true);
 
-        let result = await refreshToken();
-        if (!result.isSuccessfully) {
-            Toast.show({
-                type: "error",
-                text1: result.data,
-            });
-        } else {
-            const formData = new FormData();
-            formData.append("flowerImage", image);
-
-            const response = await FetchApi(
-                UrlConfig.identification.classifyFlower,
-                "POST",
-                result.data,
-                formData,
-                true
-            );
-
-            if (response.succeeded) {
-                navigation.navigate(
-                    "SuccessDetect",
-                    (params = {
-                        result: response.data,
-                    })
-                );
-            } else {
+        let token = undefined;
+        if (userInfo) {
+            let result = await refreshToken();
+            if (!result.isSuccessfully) {
                 Toast.show({
                     type: "error",
-                    text1: response.message,
+                    text1: result.data,
                 });
-            }
+                SetIsLoading(false);
+                SetIsShowAnimated(false);
+                SetDetectDisabled(false);
+                return;
+            } else token = result.data;
+        }
+        const formData = new FormData();
+        formData.append("flowerImage", image);
+
+        const response = await FetchApi(
+            UrlConfig.identification.classifyFlower,
+            "POST",
+            token,
+            formData,
+            true
+        );
+
+        if (response.succeeded) {
+            navigation.navigate(
+                "SuccessDetect",
+                (params = {
+                    result: response.data,
+                })
+            );
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
         }
 
         SetIsLoading(false);

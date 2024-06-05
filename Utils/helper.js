@@ -1,4 +1,5 @@
 import { Alert } from "react-native";
+import Moment from "moment";
 
 export const ConvertToShortSoldQuantity = (soldQuantity) => {
     if (soldQuantity < 1000) return soldQuantity;
@@ -80,4 +81,35 @@ export const ShortenString = (str = "", numberOfCharacters = 10) => {
     if (str.length > numberOfCharacters)
         return str.substring(0, numberOfCharacters) + "...";
     else return str.substring(0, numberOfCharacters);
+};
+
+export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+export const FormatDate = (dateStr, formatStr = "DD/MM/YYYY HH:mm") => {
+    if (typeof dateStr === "string") dateStr = new Date(dateStr);
+    return Moment(dateStr).format(formatStr);
+};
+
+export const ConvertToShipDate = (dateStr) => {
+    let dayOfWeekIndex = new Date(dateStr).getDay();
+    let formatDate = FormatDate(dateStr);
+    let dayOfWeek = "";
+
+    if (dayOfWeekIndex === 1) {
+        dayOfWeek = "Monday";
+    } else if (dayOfWeekIndex === 2) {
+        dayOfWeek = "Tuesday";
+    } else if (dayOfWeekIndex === 3) {
+        dayOfWeek = "Wednesday";
+    } else if (dayOfWeekIndex === 4) {
+        dayOfWeek = "Thursday";
+    } else if (dayOfWeekIndex === 5) {
+        dayOfWeek = "Friday";
+    } else if (dayOfWeekIndex === 6) {
+        dayOfWeek = "Saturday";
+    } else {
+        dayOfWeek = "Sunday";
+    }
+
+    return dayOfWeek + ", " + formatDate;
 };

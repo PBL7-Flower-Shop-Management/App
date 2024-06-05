@@ -50,7 +50,11 @@ const ProductList = ({ title, products, navigation }) => {
                             onPress={() =>
                                 navigation.navigate(
                                     "FlowerDetail",
-                                    (params = { _id: product._id })
+                                    (params = {
+                                        _id: product._id
+                                            ? product._id
+                                            : product.flowerId,
+                                    })
                                 )
                             }
                         >

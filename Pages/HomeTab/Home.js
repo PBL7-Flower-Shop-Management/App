@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
     TextInput,
     View,
@@ -15,13 +15,13 @@ import { CustomText } from "../Components/CustomText";
 import { scale, textInputDefaultSize } from "../../Utils/constants.js";
 import FeedbackList from "../Components/FeedbackList.js";
 import SuggestedProductList from "../Components/SuggestedProductList.js";
-import Cart from "../Components/Cart.js";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "../Components/ToastConfig.js";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
+import { CartContext } from "../../Context/CartContext.js";
 
 const Home = ({ navigation, route }) => {
-    const [modalVisible, setModalVisible] = useState(false);
     const [txtSearch, SetTxtSearch] = useState(null);
     const inputRef = useRef(null);
     const [flowerBestSeller, setFlowerBestSeller] = useState([]);
@@ -31,6 +31,7 @@ const Home = ({ navigation, route }) => {
     const [suggestedProductList, setSuggestedProductList] = useState([]);
     const [isLoading, SetIsLoading] = useState(false);
     const [refresh, SetRefresh] = useState(false);
+    const { setCartVisible } = useContext(CartContext);
 
     const getFLowerBestSeller = async () => {
         const response = await FetchApi(
@@ -178,7 +179,7 @@ const Home = ({ navigation, route }) => {
                             ></TextInput>
                             <TouchableOpacity
                                 className="p-1 flex-row flex-end"
-                                // onPress={() => SetModalVisible(true)}
+                                // onPress={() => setCartVisible(true)}
                             >
                                 <Image
                                     className="h-5 w-5"
@@ -188,7 +189,7 @@ const Home = ({ navigation, route }) => {
                         </Pressable>
                         <TouchableOpacity
                             className="w-10 p-1 flex-row flex-end items-center justify-center"
-                            onPress={() => setModalVisible(true)}
+                            onPress={() => setCartVisible(true)}
                         >
                             <Image
                                 className="h-6 w-6"
@@ -248,10 +249,7 @@ const Home = ({ navigation, route }) => {
                     />
                 </View>
             </ScrollView>
-            <Cart
-                visible={modalVisible}
-                closeModal={() => setModalVisible(false)}
-            />
+            <Toast config={toastConfig} />
         </View>
     );
 };

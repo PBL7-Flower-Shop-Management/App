@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
     TouchableOpacity,
     View,
@@ -11,10 +11,16 @@ import { CustomText } from "../Components/CustomText";
 import styles from "./styles.js";
 import { scale } from "../../Utils/constants";
 import { AuthContext } from "../../Context/AuthContext.js";
+import { PopupContext } from "../../Context/PopupContext.js";
 
 function Setting({ navigation }) {
     const [isWarningShow, SetIsWarningShow] = useState(false);
-    const { logout } = useContext(AuthContext);
+    const { userInfo, logout } = useContext(AuthContext);
+    const { setVisible } = useContext(PopupContext);
+
+    useEffect(() => {
+        if (!userInfo) setVisible(true);
+    }, [userInfo]);
 
     return (
         <View className="flex-1 bg-white">

@@ -5,6 +5,7 @@ import {
     StatusBar,
     ScrollView,
     RefreshControl,
+    TouchableOpacity,
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { Result } from "../Components/Result";
@@ -13,12 +14,14 @@ import UrlConfig from "../../Config/UrlConfig.js";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../Components/ToastConfig.js";
 import { AuthContext } from "../../Context/AuthContext.js";
+import { PopupContext } from "../../Context/PopupContext.js";
 
 function IdentificationHistory() {
     const [identificationHistories, setIdentificationHistories] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [isLoading, SetIsLoading] = useState(false);
-    const { refreshToken } = useContext(AuthContext);
+    const { refreshToken, userInfo } = useContext(AuthContext);
+    const { setVisible } = useContext(PopupContext);
 
     const getHistories = async () => {
         SetIsLoading(true);
@@ -49,12 +52,14 @@ function IdentificationHistory() {
     };
 
     useEffect(() => {
-        SetIsLoading(true);
-        getHistories();
+        if (userInfo) {
+            SetIsLoading(true);
+            getHistories();
+        }
     }, []);
 
     useEffect(() => {
-        if (refresh) {
+        if (refresh && userInfo) {
             getHistories();
         }
     }, [refresh]);
@@ -74,38 +79,57 @@ function IdentificationHistory() {
                     </CustomText>
                 </View>
             </View>
-            <ScrollView
-                className="m-0"
-                refreshControl={
-                    <RefreshControl
-                        style={{ tintColor: "green" }}
-                        refreshing={refresh}
-                        onRefresh={() => setRefresh(true)}
-                    />
-                }
-            >
-                {identificationHistories &&
-                identificationHistories.length > 0 ? (
-                    <View className="pt-2 px-2">
-                        {identificationHistories.map((ih, id) => (
-                            <Result key={id} data={ih} />
-                        ))}
-                        <View className="mb-52"></View>
-                    </View>
-                ) : (
-                    <View>
-                        <View className="gap-y-3 items-center justify-center mt-28">
-                            <Image
-                                className="h-32 w-32 ml-4"
-                                source={require("../../Public/Images/not-detect.png")}
-                            />
-                            <CustomText style={{ fontSize: 14 }}>
-                                Bạn chưa nhận dạng hoa lần nào!
-                            </CustomText>
+            {userInfo ? (
+                <ScrollView
+                    className="m-0"
+                    refreshControl={
+                        <RefreshControl
+                            style={{ tintColor: "green" }}
+                            refreshing={refresh}
+                            onRefresh={() => setRefresh(true)}
+                        />
+                    }
+                >
+                    {identificationHistories &&
+                    identificationHistories.length > 0 ? (
+                        <View className="pt-2 px-2">
+                            {identificationHistories.map((ih, id) => (
+                                <Result key={id} data={ih} />
+                            ))}
+                            <View className="mb-52"></View>
                         </View>
-                    </View>
-                )}
-            </ScrollView>
+                    ) : (
+                        <View>
+                            <View className="gap-y-3 items-center justify-center mt-28">
+                                <Image
+                                    className="h-32 w-32 ml-4"
+                                    source={require("../../Public/Images/not-detect.png")}
+                                />
+                                <CustomText style={{ fontSize: 14 }}>
+                                    Bạn chưa nhận dạng hoa lần nào!
+                                </CustomText>
+                            </View>
+                        </View>
+                    )}
+                </ScrollView>
+            ) : (
+                <View className="items-center justify-center h-4/6">
+                    <CustomText>
+                        Đăng nhập để xem lịch sử nhận dạng của bạn!
+                    </CustomText>
+                    <TouchableOpacity
+                        className="border rounded-md p-2 mt-4 w-32 items-center justify-center"
+                        style={{ backgroundColor: "#152259" }}
+                        onPress={() => {
+                            setVisible(true);
+                        }}
+                    >
+                        <CustomText style={{ color: "white" }}>
+                            Đăng nhập
+                        </CustomText>
+                    </TouchableOpacity>
+                </View>
+            )}
             <Toast config={toastConfig} />
         </View>
     );

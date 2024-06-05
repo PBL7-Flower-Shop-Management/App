@@ -2,6 +2,7 @@ import React from "react";
 import { useFonts } from "expo-font";
 
 import { AuthProvider } from "./Context/AuthContext.js";
+import { PopupProvider } from "./Context/PopupContext.js";
 import Navigation from "./Pages/Components/Navigation.js";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -20,7 +21,9 @@ function App() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <AuthProvider>
-                <Navigation />
+                <PopupProvider>
+                    <Navigation />
+                </PopupProvider>
             </AuthProvider>
         </GestureHandlerRootView>
     );

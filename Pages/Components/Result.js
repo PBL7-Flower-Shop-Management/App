@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { TouchableOpacity, View, Image, Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
-import Moment from "moment";
 import { CustomText } from "./CustomText";
+import { FormatDate } from "../../Utils/helper";
 
 export const Result = ({ data, showHideOption = true }) => {
     const [isModalVisible, SetIsModalVisible] = useState(false);
@@ -45,7 +45,7 @@ export const Result = ({ data, showHideOption = true }) => {
                             fontFamily: "Be Vietnam italic",
                         }}
                     >
-                        {Moment(data.date).format("DD/MM/YYYY HH:mm")}
+                        {FormatDate(data.date)}
                     </CustomText>
                 </View>
                 <View className="flex-row items-center gap-x-2 justify-center mb-2">
@@ -136,7 +136,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                                 className="flex-row justify-between mt-2"
                                                 key={id}
                                             >
-                                                <View className="flex-grow items-center">
+                                                <View className="flex-grow items-center w-2/6">
                                                     <TouchableOpacity
                                                         className="items-center"
                                                         onPress={() => {

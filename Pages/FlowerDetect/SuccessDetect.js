@@ -74,7 +74,7 @@ const SuccessDetect = ({ navigation, route }) => {
                 {flowerInfo && (
                     <View className="pt-2" style={{ height: "80%" }}>
                         <ScrollView className="m-0">
-                            <Result data={flowerInfo} showHideOption={false} />
+                            <Result data={flowerInfo} />
                             {/* <View className="mb-52"></View> */}
                         </ScrollView>
                     </View>

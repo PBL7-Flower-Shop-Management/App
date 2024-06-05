@@ -21,8 +21,8 @@ import UrlConfig from "../../Config/UrlConfig.js";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { toastConfig } from "../Components/ToastConfig.js";
 
-const Cart = ({ visible, closeModal }) => {
-    const { refreshToken } = useContext(AuthContext);
+const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
+    const { refreshToken, userInfo } = useContext(AuthContext);
     const [listCart, setListCart] = useState([]);
     const [selectedCart, setSelectedCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -167,7 +167,7 @@ const Cart = ({ visible, closeModal }) => {
     }, [selectedCart]);
 
     useEffect(() => {
-        getCarts();
+        if (userInfo) getCarts();
     }, []);
 
     return (
@@ -240,52 +240,82 @@ const Cart = ({ visible, closeModal }) => {
                         </TouchableOpacity>
                     </View>
                     <View className="my-2 h-0.5 bg-gray-100"></View>
-                    {listCart && listCart.length > 0 ? (
-                        <View className="flex-grow justify-between pb-5">
-                            <View>
-                                <ScrollView>
-                                    {listCart.map((p, id) => (
-                                        <CartItem
-                                            key={id}
-                                            product={p}
-                                            handleChangeNumber={(value) => {
-                                                handleChangeAmount(p.id, value);
-                                            }}
-                                            handleCheckItem={() =>
-                                                handleCheckItem(p)
-                                            }
-                                            handleDeleteItem={() =>
-                                                handleDeleteItem(p)
-                                            }
-                                        />
-                                    ))}
-                                </ScrollView>
-                                <View className="mt-2 -mx-5 h-0.5 bg-gray-100"></View>
-                            </View>
-                            <View className="flex-row justify-between">
-                                <View>
-                                    <CustomText>Tổng tiền</CustomText>
-                                    <CustomText
-                                        className="text-red-400"
-                                        style={{ fontSize: 16 }}
-                                    >
-                                        {totalPrice}$
-                                    </CustomText>
-                                </View>
-                                <TouchableOpacity className="bg-red-400 rounded-md justify-center px-5">
-                                    <CustomText className="text-white">
-                                        Mua Hàng ({selectedCart.length})
-                                    </CustomText>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    ) : (
+                    {userInfo ? (
                         <>
-                            <CustomText>
-                                Chưa có sản phẩm nào được thêm vào giỏ hàng!
-                            </CustomText>
-                            <Button title="reload" onPress={() => getCarts()} />
+                            {listCart && listCart.length > 0 ? (
+                                <View className="flex-grow justify-between pb-5">
+                                    <View>
+                                        <ScrollView>
+                                            {listCart.map((p, id) => (
+                                                <CartItem
+                                                    key={id}
+                                                    product={p}
+                                                    handleChangeNumber={(
+                                                        value
+                                                    ) => {
+                                                        handleChangeAmount(
+                                                            p.id,
+                                                            value
+                                                        );
+                                                    }}
+                                                    handleCheckItem={() =>
+                                                        handleCheckItem(p)
+                                                    }
+                                                    handleDeleteItem={() =>
+                                                        handleDeleteItem(p)
+                                                    }
+                                                />
+                                            ))}
+                                        </ScrollView>
+                                        <View className="mt-2 -mx-5 h-0.5 bg-gray-100"></View>
+                                    </View>
+                                    <View className="flex-row justify-between">
+                                        <View>
+                                            <CustomText>Tổng tiền</CustomText>
+                                            <CustomText
+                                                className="text-red-400"
+                                                style={{ fontSize: 16 }}
+                                            >
+                                                {totalPrice}$
+                                            </CustomText>
+                                        </View>
+                                        <TouchableOpacity className="bg-red-400 rounded-md justify-center px-5">
+                                            <CustomText className="text-white">
+                                                Mua Hàng ({selectedCart.length})
+                                            </CustomText>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ) : (
+                                <>
+                                    <CustomText>
+                                        Chưa có sản phẩm nào được thêm vào giỏ
+                                        hàng!
+                                    </CustomText>
+                                    <Button
+                                        title="reload"
+                                        onPress={() => getCarts()}
+                                    />
+                                </>
+                            )}
                         </>
+                    ) : (
+                        <View className="items-center justify-center h-3/5">
+                            <CustomText>
+                                Đăng nhập để quản lý giỏ hàng của bạn!
+                            </CustomText>
+                            <TouchableOpacity
+                                className="border rounded-md p-2 mt-4 w-32 items-center justify-center"
+                                style={{ backgroundColor: "#152259" }}
+                                onPress={() => {
+                                    onNavigateToLogin();
+                                }}
+                            >
+                                <CustomText style={{ color: "white" }}>
+                                    Đăng nhập
+                                </CustomText>
+                            </TouchableOpacity>
+                        </View>
                     )}
                 </View>
             </KeyboardAvoidingView>

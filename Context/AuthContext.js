@@ -99,18 +99,26 @@ export const AuthProvider = ({ children }) => {
         );
 
         if (response.succeeded) {
-            let userInfo = response.data.user;
-            userInfo.token = response.data.token.accessToken;
-            userInfo.refreshToken = response.data.token.refreshToken;
-            userInfo.tokenExpiryTime = response.data.token.accessTokenExpiresAt;
-            userInfo.refreshTokenExpiryTime =
-                response.data.token.refreshTokenExpireAt;
+            if (response.data.user.role !== "Customer") {
+                message = "Ứng dụng mua sắm chỉ dành cho khách hàng đăng nhập!";
+            } else {
+                let userInfo = response.data.user;
+                userInfo.token = response.data.token.accessToken;
+                userInfo.refreshToken = response.data.token.refreshToken;
+                userInfo.tokenExpiryTime =
+                    response.data.token.accessTokenExpiresAt;
+                userInfo.refreshTokenExpiryTime =
+                    response.data.token.refreshTokenExpireAt;
 
-            const username = response.data.user.username;
-            SetUserInfo(userInfo);
-            SetUsername(username);
-            AsyncStorage.setItem("isRememberLogin", isRememberLogin.toString());
-            message = "Login successfully!";
+                const username = response.data.user.username;
+                SetUserInfo(userInfo);
+                SetUsername(username);
+                AsyncStorage.setItem(
+                    "isRememberLogin",
+                    isRememberLogin.toString()
+                );
+                message = "Login successfully!";
+            }
         } else {
             message = response.message;
         }

@@ -16,15 +16,19 @@ import styles from "./style.js";
 import { CustomText } from "../Components/CustomText.js";
 import { AuthContext } from "../../Context/AuthContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PopupContext } from "../../Context/PopupContext.js";
 
 const Login = ({ navigation, route }) => {
     const {
         isLoading,
         login,
+        userInfo,
         request,
         message: googleMessage,
         googleLogin,
     } = useContext(AuthContext);
+
+    const { setVisible } = useContext(PopupContext);
 
     const [username, SetUsername] = useState("");
     const [password, SetPassword] = useState("");
@@ -50,17 +54,21 @@ const Login = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        if (route.params?.resetSuccess) {
+        if (route?.params?.resetSuccess) {
             Toast.show({
                 type: "success",
                 text1: "Reset your password successfully! Let's login!",
             });
         }
-    }, [route.params]);
+    }, [route?.params]);
 
     useEffect(() => {
         SetMessage(googleMessage);
     }, [googleMessage]);
+
+    useEffect(() => {
+        if (userInfo) setVisible(false);
+    }, [userInfo]);
 
     const checkLogic = () => {
         if (
@@ -94,6 +102,18 @@ const Login = ({ navigation, route }) => {
                         <ActivityIndicator size="large" color="green" />
                     </View>
                 )}
+                <View className="absolute top-6 left-6">
+                    <TouchableOpacity onPress={() => setVisible(false)}>
+                        <CustomText
+                            style={{
+                                color: "black",
+                                fontSize: 18,
+                            }}
+                        >
+                            X
+                        </CustomText>
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.head}>
                     <CustomText style={styles.title}>
                         Flower shopping
@@ -142,7 +162,10 @@ const Login = ({ navigation, route }) => {
                     </View>
                     {message && (
                         <CustomText
-                            style={{ color: "red", alignSelf: "flex-start" }}
+                            style={{
+                                color: "red",
+                                alignSelf: "flex-start",
+                            }}
                         >
                             {message}
                         </CustomText>
@@ -159,7 +182,10 @@ const Login = ({ navigation, route }) => {
                         <Checkbox
                             value={isRememberLogin}
                             onValueChange={SetRememberLogin}
-                            style={{ borderColor: "#DFE0E2", borderRadius: 3 }}
+                            style={{
+                                borderColor: "#DFE0E2",
+                                borderRadius: 3,
+                            }}
                         />
                         <CustomText> Remember me</CustomText>
                     </Pressable>
