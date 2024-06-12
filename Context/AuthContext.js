@@ -65,24 +65,19 @@ export const AuthProvider = ({ children }) => {
         setItem();
     }, [userInfo]);
 
-    const register = (username, password) => {
+    const register = async (values) => {
+        // Handle form submission logic here
         SetIsLoading(true);
-        axios
-            .post(API_URL + "auth/register", {
-                username: username,
-                password: password,
-            })
-            .then((res) => {
-                let userInfo = res.data;
-                SetUsername(username);
-                SetUserInfo(userInfo);
-                SetIsLoading(false);
-                console.log(userInfo);
-            })
-            .catch((e) => {
-                console.log(`register error ${e}`);
-                SetIsLoading(false);
-            });
+
+        const response = await FetchApi(
+            UrlConfig.authentication.register,
+            "POST",
+            null,
+            values
+        );
+
+        SetIsLoading(false);
+        return response;
     };
 
     const login = async (username, password, isRememberLogin) => {

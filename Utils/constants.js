@@ -2,7 +2,7 @@ import { Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
 
 // export const API_URL = "http://192.168.101.13:5678/api/"; //local host server
-export const API_URL = "http://192.168.1.11:3000"; //local host server
+export const API_URL = "http://192.168.1.17:3000"; //local host server
 // export const API_URL = "https://flower-shop-management-web-server.vercel.app";
 //Note: if demo aspnet backend at localhost, change this API_URL and applicationUrl field
 //in launchSettings.json file of aspnet to your wifi ip on computer (only http (not https) that working at localhost)

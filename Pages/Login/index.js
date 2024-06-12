@@ -60,6 +60,11 @@ const Login = ({ navigation, route }) => {
                 text1: "Reset your password successfully! Let's login!",
             });
         }
+        if (route?.params?.registerSuccess)
+            Toast.show({
+                type: "success",
+                text1: "Register the account successfully! Let's login!",
+            });
     }, [route?.params]);
 
     useEffect(() => {

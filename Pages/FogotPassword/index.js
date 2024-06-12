@@ -35,7 +35,6 @@ const ForgotPassword = ({ navigation }) => {
             validationSchema={validationSchema}
             onSubmit={async (values) => {
                 // Handle form submission logic here
-                console.log(values);
                 SetIsLoading(true);
 
                 const response = await FetchApi(
