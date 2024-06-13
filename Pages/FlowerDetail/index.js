@@ -185,7 +185,7 @@ const FlowerDetail = ({ navigation, route }) => {
                                 ({flowerInformation.feedbacksTotal})
                             </CustomText>
                             <CustomText>
-                                | Đã bán{" "}
+                                | Sold{" "}
                                 {ConvertToShortSoldQuantity(
                                     flowerInformation.soldQuantity
                                 )}
@@ -242,18 +242,18 @@ const FlowerDetail = ({ navigation, route }) => {
                             unitPrice={flowerInformation.unitPrice}
                             discount={flowerInformation.discount}
                         />
-                        <View className="flex-row justify-between p-1 px-2">
+                        <View className="flex-row justify-evenly p-1 px-2">
                             <TouchableOpacity
                                 className="bg-white border-blue-500 border p-2 px-8 rounded-md"
                                 onPress={() => setCartVisible(true)}
                             >
                                 <CustomText className="text-blue-500">
-                                    Thêm vào giỏ
+                                    Add to cart
                                 </CustomText>
                             </TouchableOpacity>
                             <TouchableOpacity className="bg-red-500 p-2 px-12 rounded-md">
                                 <CustomText className="text-white">
-                                    Mua ngay
+                                    Buy
                                 </CustomText>
                             </TouchableOpacity>
                         </View>
@@ -265,47 +265,45 @@ const FlowerDetail = ({ navigation, route }) => {
                                     fontFamily: "Be Vietnam bold",
                                 }}
                             >
-                                Thông tin vận chuyển
+                                Ship information
                             </CustomText>
                             <View className="flex-row gap-x-1">
                                 <Image
                                     className="h-4 w-4"
                                     source={require("../../Public/Images/location.png")}
                                 ></Image>
-                                <CustomText>Giao đến</CustomText>
+                                <CustomText>Ship to</CustomText>
                                 <CustomText
                                     style={{
                                         color: "black",
                                         fontFamily: "Be Vietnam bold",
                                     }}
                                 >
-                                    Q. Thanh Khê, P. An Khê, Đà Nẵng
+                                    Hoa Phat, Cam Le, TP Da Nang
                                 </CustomText>
                             </View>
                         </View>
                         <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                         <View className="p-2 gap-y-1">
                             <DetailInformation
-                                title="Tổng quan"
+                                title="Overview"
                                 data={{
-                                    "Danh mục": flowerInformation.category
+                                    Category: flowerInformation.category
                                         .map((c) => c.categoryName)
                                         .join(", "),
-                                    "Xuất sứ": flowerInformation.origin,
-                                    "Thời gian sinh trưởng":
-                                        flowerInformation.growthTime,
+                                    Origin: flowerInformation.origin,
+                                    "Growth time": flowerInformation.growthTime,
                                 }}
                             />
                         </View>
                         <View className="p-2 gap-y-1">
                             <Information
-                                title="Thông tin chi tiết"
+                                title="Detail information"
                                 data={{
-                                    "Mô tả sản phẩm":
-                                        flowerInformation.description,
-                                    "Môi trường": flowerInformation.habitat,
-                                    "Cách chăm sóc": flowerInformation.care,
-                                    "Cách phòng bệnh":
+                                    Description: flowerInformation.description,
+                                    Habitat: flowerInformation.habitat,
+                                    "How to care": flowerInformation.care,
+                                    "Disease prevention":
                                         flowerInformation.diseasePrevention,
                                 }}
                             />
@@ -313,7 +311,7 @@ const FlowerDetail = ({ navigation, route }) => {
                         {reviews && (
                             <View className="p-2 gap-y-1">
                                 <ReviewList
-                                    title="Khách hàng đánh giá"
+                                    title="Customer review"
                                     overview={{
                                         starsTotal:
                                             flowerInformation.starsTotal,

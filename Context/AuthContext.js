@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
 
         if (response.succeeded) {
             if (response.data.user.role !== "Customer") {
-                message = "Ứng dụng mua sắm chỉ dành cho khách hàng đăng nhập!";
+                message = "The shopping app is for logged in customers only!";
             } else {
                 let userInfo = response.data.user;
                 userInfo.token = response.data.token.accessToken;
@@ -244,6 +244,7 @@ export const AuthProvider = ({ children }) => {
                 let refreshTokenExpiryTime = new Date(
                     userInfo.refreshTokenExpiryTime
                 );
+
                 if (
                     refreshTokenExpiryTime != null &&
                     refreshTokenExpiryTime > new Date()
@@ -291,7 +292,7 @@ export const AuthProvider = ({ children }) => {
                         AsyncStorage.removeItem("isRefreshing");
                         return {
                             isSuccessfully: false,
-                            data: `Refresh token thất bại: ${res.messages}`,
+                            data: `Refresh token thất bại: ${response.message}`,
                         };
                     }
                 } else {
@@ -327,6 +328,7 @@ export const AuthProvider = ({ children }) => {
                 message,
                 username,
                 userInfo,
+                SetUserInfo,
                 splashLoading,
                 register,
                 login,

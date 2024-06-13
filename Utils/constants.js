@@ -44,13 +44,13 @@ export const SIZES = {
 };
 
 export const userRole = {
-    Admin: "Quản trị viên",
-    Employee: "Nhân viên",
-    Customer: "Khách hàng",
+    Admin: "Admin",
+    Employee: "Employee",
+    Customer: "Customer",
 };
 export const flowerStatus = {
-    "Out of stock": "Hết hàng",
-    Available: "Có sẵn",
+    "Out of stock": "Out of stock",
+    Available: "Available",
 };
 
 export const flowerStatusIcon = {
@@ -64,25 +64,25 @@ export const flowerStatusColor = {
 };
 
 export const ratingReview = {
-    0: "Tệ",
-    1: "Không ổn",
-    2: "Tốt",
-    3: "Tuyệt vời",
-    4: "Xuất sắc",
+    0: "Poor",
+    1: "Fair",
+    2: "Good",
+    3: "Excellent",
+    4: "Outstanding",
 };
 
 export const orderStatus = {
-    "Pending payment processing": "Chờ thanh toán",
-    Processing: "Đang xử lý",
-    Shipped: "Đã vận chuyển",
-    Delivered: "Đã giao",
-    Cancelled: "Huỷ",
+    Processing: "Processing",
+    Shipped: "Shipped",
+    Delivered: "Delivered",
+    Cancelled: "Cancelled",
+    "Pending payment processing": "Pending payment processing",
 };
 
 export const orderStatusIcon = {
-    "Pending payment processing": require("../Public/Images/wallet.png"),
     Processing: require("../Public/Images/process.png"),
     Shipped: require("../Public/Images/shipping.png"),
     Delivered: require("../Public/Images/delivered.png"),
     Cancelled: require("../Public/Images/cancelOrder.png"),
+    "Pending payment processing": require("../Public/Images/wallet.png"),
 };

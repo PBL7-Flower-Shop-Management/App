@@ -45,7 +45,7 @@ function Setting({ navigation }) {
                         className="self-center"
                         style={{ fontSize: 14 }}
                     >
-                        Thiết lập tài khoản
+                        Reset account
                     </CustomText>
                 </View>
             </View>
@@ -54,7 +54,7 @@ function Setting({ navigation }) {
                     className="flex-row justify-between px-2"
                     onPress={() => navigation.navigate("Profile")}
                 >
-                    <CustomText>Thông tin tài khoản</CustomText>
+                    <CustomText>Account information</CustomText>
                     <Image
                         className="h-6 w-6"
                         style={{ tintColor: "#31b1e0" }}
@@ -63,7 +63,7 @@ function Setting({ navigation }) {
                 </TouchableOpacity>
                 <View className="-mx-10 h-0.5 bg-gray-100"></View>
                 <TouchableOpacity className="flex-row justify-between px-2">
-                    <CustomText>Sổ địa chỉ</CustomText>
+                    <CustomText>Address notebook</CustomText>
                     <Image
                         className="h-6 w-6"
                         style={{ tintColor: "#31b1e0" }}
@@ -72,7 +72,7 @@ function Setting({ navigation }) {
                 </TouchableOpacity>
                 <View className="-mx-10 h-0.5 bg-gray-100"></View>
                 <TouchableOpacity className="flex-row justify-between px-2">
-                    <CustomText>Thông tin thanh toán</CustomText>
+                    <CustomText>Payment information</CustomText>
                     <Image
                         className="h-6 w-6"
                         style={{ tintColor: "#31b1e0" }}
@@ -90,7 +90,7 @@ function Setting({ navigation }) {
                             color: "#FF6666",
                         }}
                     >
-                        Đăng xuất
+                        Logout
                     </CustomText>
                 </TouchableOpacity>
             </View>
@@ -119,7 +119,7 @@ function Setting({ navigation }) {
                                         />
                                     </TouchableOpacity>
                                     <CustomText style={styles.modalTitle}>
-                                        Cảnh báo
+                                        Warning
                                     </CustomText>
                                 </View>
                                 <View style={styles.modalContent}>
@@ -129,7 +129,7 @@ function Setting({ navigation }) {
                                             width: 270,
                                         }}
                                     >
-                                        Bạn có chắc chắn muốn đăng xuất không?
+                                        Are you sure you want to sign out?
                                     </CustomText>
                                 </View>
                                 <View
@@ -151,7 +151,7 @@ function Setting({ navigation }) {
                                                 fontFamily: "Be Vietnam bold",
                                             }}
                                         >
-                                            Đăng xuất
+                                            Log out
                                         </CustomText>
                                     </TouchableOpacity>
                                     <TouchableOpacity
@@ -164,7 +164,7 @@ function Setting({ navigation }) {
                                                 fontFamily: "Be Vietnam bold",
                                             }}
                                         >
-                                            Huỷ
+                                            Cancel
                                         </CustomText>
                                     </TouchableOpacity>
                                 </View>

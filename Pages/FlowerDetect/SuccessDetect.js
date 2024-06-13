@@ -68,7 +68,7 @@ const SuccessDetect = ({ navigation, route }) => {
                             fontSize: 20 * scale,
                         }}
                     >
-                        Kết quả
+                        Result
                     </CustomText>
                 </View>
                 {flowerInfo && (

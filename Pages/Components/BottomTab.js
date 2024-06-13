@@ -146,7 +146,7 @@ const BottomTab = ({ navigation }) => {
                                             fontSize: 10 * scale,
                                         }}
                                     >
-                                        Trang chủ
+                                        Home
                                     </CustomText>
                                 </View>
                             ),
@@ -190,7 +190,7 @@ const BottomTab = ({ navigation }) => {
                                             fontSize: 10 * scale,
                                         }}
                                     >
-                                        Danh mục
+                                        Category
                                     </CustomText>
                                 </View>
                             ),
@@ -236,7 +236,7 @@ const BottomTab = ({ navigation }) => {
                                                     fontSize: 10 * scale,
                                                 }}
                                             >
-                                                Nhận dạng hoa
+                                                Flower detect AI
                                             </CustomText>
                                         </View>
                                     </View>
@@ -286,7 +286,7 @@ const BottomTab = ({ navigation }) => {
                                             fontSize: 10 * scale,
                                         }}
                                     >
-                                        Lịch sử
+                                        History
                                     </CustomText>
                                 </View>
                             ),
@@ -325,7 +325,7 @@ const BottomTab = ({ navigation }) => {
                                             fontSize: 10 * scale,
                                         }}
                                     >
-                                        Tài khoản
+                                        Account
                                     </CustomText>
                                 </View>
                             ),

@@ -19,7 +19,7 @@ export const Result = ({ data, showHideOption = true }) => {
                 }}
             >
                 <CustomText style={{ fontFamily: "Be Vietnam bold" }}>
-                    Kết quả nhận dạng:{" "}
+                    Detect result:{" "}
                     <TouchableOpacity
                         className="-mb-0.5"
                         onPress={() => {
@@ -27,7 +27,8 @@ export const Result = ({ data, showHideOption = true }) => {
                         }}
                     >
                         <CustomText className="text-blue-400 underline">
-                            {data.results[0].vietnamese_label}
+                            {data.results[0].english_label} (
+                            {data.results[0].vietnamese_label})
                         </CustomText>
                     </TouchableOpacity>
                 </CustomText>
@@ -37,7 +38,7 @@ export const Result = ({ data, showHideOption = true }) => {
                             color: "green",
                         }}
                     >
-                        Độ chính xác: {data.results[0].accuracy.toFixed(2)}%
+                        Accuracy: {data.results[0].accuracy.toFixed(2)}%
                     </CustomText>
                     <CustomText
                         className="text-gray-400"
@@ -64,7 +65,7 @@ export const Result = ({ data, showHideOption = true }) => {
                         />
                     </TouchableOpacity>
                     <View className="items-center">
-                        <CustomText>Dự đoán</CustomText>
+                        <CustomText>Predict</CustomText>
                         <Image
                             className="h-12 w-12 rounded-full"
                             source={require("../../Public/Images/infer.png")}
@@ -94,7 +95,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                         paddingLeft: 10,
                                     }}
                                 >
-                                    Kết quả dự đoán khác:
+                                    Other predicted results:
                                 </CustomText>
                                 {!showAnotherResult && showHideOption ? (
                                     <TouchableOpacity
@@ -104,7 +105,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                         }}
                                     >
                                         <CustomText className="text-blue-400 underline">
-                                            Xem thêm
+                                            See more
                                         </CustomText>
                                     </TouchableOpacity>
                                 ) : (
@@ -117,7 +118,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                                             "Be Vietnam bold",
                                                     }}
                                                 >
-                                                    Tên hoa
+                                                    Flower name
                                                 </CustomText>
                                             </View>
                                             <View className="flex-grow items-center">
@@ -127,7 +128,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                                             "Be Vietnam bold",
                                                     }}
                                                 >
-                                                    Độ chính xác
+                                                    Accuracy
                                                 </CustomText>
                                             </View>
                                         </View>
@@ -162,7 +163,10 @@ export const Result = ({ data, showHideOption = true }) => {
                                                             color: "gray",
                                                         }}
                                                     >
-                                                        {r.vietnamese_label}
+                                                        {data.results[0]
+                                                            .english_label +
+                                                            " " +
+                                                            `(${r.vietnamese_label})`}
                                                     </CustomText>
                                                 </View>
                                                 <View className="justify-center items-center pb-5 w-6/12">
@@ -184,7 +188,7 @@ export const Result = ({ data, showHideOption = true }) => {
                                                 }}
                                             >
                                                 <CustomText className="text-blue-400 underline">
-                                                    Ẩn bớt
+                                                    See less
                                                 </CustomText>
                                             </TouchableOpacity>
                                         )}

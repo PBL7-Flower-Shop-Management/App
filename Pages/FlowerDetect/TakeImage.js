@@ -196,7 +196,7 @@ const TakeImage = ({ navigation, route }) => {
                             }
                         />
                     </TouchableOpacity>
-                    <CustomText style={styles.title}>Nhận diện hoa</CustomText>
+                    <CustomText style={styles.title}>Flower detect</CustomText>
                     <TouchableOpacity
                         style={styles.btnCancel}
                         onPress={() => navigation.goBack()}
@@ -238,7 +238,7 @@ const TakeImage = ({ navigation, route }) => {
                                 style={styles.zoomResetButton}
                             >
                                 <CustomText style={styles.zoomResetText}>
-                                    Đặt lại tỷ lệ
+                                    Reset zoom
                                 </CustomText>
                             </TouchableOpacity>
                         </View>
@@ -304,12 +304,12 @@ const TakeImage = ({ navigation, route }) => {
                                 style={{
                                     position: "absolute",
                                     bottom: -20,
-                                    left: -14,
+                                    left: -25,
                                     width: 100,
                                     color: "white",
                                 }}
                             >
-                                Chọn ảnh
+                                Select image
                             </CustomText>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -353,12 +353,12 @@ const TakeImage = ({ navigation, route }) => {
                                 style={{
                                     position: "absolute",
                                     bottom: -20,
-                                    left: -23,
+                                    left: -18,
                                     width: 100,
                                     color: "white",
                                 }}
                             >
-                                Đảo camera
+                                Flip camera
                             </CustomText>
                         </TouchableOpacity>
                     </View>

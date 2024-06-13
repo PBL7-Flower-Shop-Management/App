@@ -87,7 +87,7 @@ const OrderDetail = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <View className="">
                     <CustomText className="text-white" style={{ fontSize: 16 }}>
-                        Chi tiết đơn hàng
+                        Order detail
                     </CustomText>
                 </View>
             </View>
@@ -106,12 +106,12 @@ const OrderDetail = ({ navigation, route }) => {
                                         fontFamily: "Be Vietnam bold",
                                     }}
                                 >
-                                    Mã đơn hàng: {order._id}
+                                    Order code: {order._id}
                                 </CustomText>
                                 <CustomText
                                     style={{ fontSize: 12, color: "gray" }}
                                 >
-                                    Ngày đặt hàng: {FormatDate(order.orderDate)}
+                                    Order date: {FormatDate(order.orderDate)}
                                 </CustomText>
                                 <CustomText
                                     className="text-lime-500 mt-1"
@@ -120,7 +120,7 @@ const OrderDetail = ({ navigation, route }) => {
                                         fontFamily: "Be Vietnam bold",
                                     }}
                                 >
-                                    Giao vào {ConvertToShipDate(order.shipDate)}
+                                    Ship on {ConvertToShipDate(order.shipDate)}
                                 </CustomText>
                             </View>
                         </View>
@@ -134,7 +134,7 @@ const OrderDetail = ({ navigation, route }) => {
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam bold" }}
                                 >
-                                    Sản phẩm đã đặt ({order.orderDetails.length}
+                                    Ordered product ({order.orderDetails.length}
                                     )
                                 </CustomText>
                                 <View>
@@ -176,7 +176,7 @@ const OrderDetail = ({ navigation, route }) => {
                                                         color: "gray",
                                                     }}
                                                 >
-                                                    Đơn giá: {od.unitPrice}$
+                                                    Unit price: {od.unitPrice}$
                                                 </CustomText>
                                                 <CustomText
                                                     style={{
@@ -184,7 +184,7 @@ const OrderDetail = ({ navigation, route }) => {
                                                         color: "gray",
                                                     }}
                                                 >
-                                                    Số lượng:{" "}
+                                                    Quantity:{" "}
                                                     {od.numberOfFlowers}
                                                 </CustomText>
                                                 {od.discount > 0 && (
@@ -194,7 +194,7 @@ const OrderDetail = ({ navigation, route }) => {
                                                             color: "gray",
                                                         }}
                                                     >
-                                                        Giảm giá: {od.discount}%
+                                                        Discount: {od.discount}%
                                                     </CustomText>
                                                 )}
                                                 <CustomText
@@ -203,7 +203,7 @@ const OrderDetail = ({ navigation, route }) => {
                                                         color: "gray",
                                                     }}
                                                 >
-                                                    Tổng tiền:{" "}
+                                                    Total price:{" "}
                                                     {(
                                                         od.unitPrice *
                                                         od.numberOfFlowers *
@@ -239,7 +239,7 @@ const OrderDetail = ({ navigation, route }) => {
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam bold" }}
                                 >
-                                    Theo dõi đơn hàng
+                                    Order tracking
                                 </CustomText>
                                 <CustomText
                                     className="text-blue-400"
@@ -262,7 +262,7 @@ const OrderDetail = ({ navigation, route }) => {
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam bold" }}
                                 >
-                                    Địa chỉ người nhận
+                                    Ship address
                                 </CustomText>
                                 <CustomText
                                     style={{
@@ -300,7 +300,7 @@ const OrderDetail = ({ navigation, route }) => {
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam bold" }}
                                 >
-                                    Hình thức thanh toán
+                                    Payment method
                                 </CustomText>
                                 <CustomText
                                     style={{
@@ -319,7 +319,7 @@ const OrderDetail = ({ navigation, route }) => {
                                     className="text-gray-400"
                                     style={{ fontSize: 13 }}
                                 >
-                                    Tạm tính
+                                    Temporary payment
                                 </CustomText>
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam Medium" }}
@@ -338,7 +338,7 @@ const OrderDetail = ({ navigation, route }) => {
                                     className="text-gray-400"
                                     style={{ fontSize: 13 }}
                                 >
-                                    Giảm giá
+                                    Discount
                                 </CustomText>
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam Medium" }}
@@ -362,7 +362,7 @@ const OrderDetail = ({ navigation, route }) => {
                                     className="text-gray-400"
                                     style={{ fontSize: 13 }}
                                 >
-                                    Phí vận chuyển
+                                    Ship fee
                                 </CustomText>
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam Medium" }}
@@ -378,7 +378,7 @@ const OrderDetail = ({ navigation, route }) => {
                                         fontSize: 13,
                                     }}
                                 >
-                                    Thành tiền
+                                    Into money
                                 </CustomText>
                                 <CustomText
                                     style={{ fontFamily: "Be Vietnam Medium" }}
@@ -397,7 +397,7 @@ const OrderDetail = ({ navigation, route }) => {
                                         color: "#FF6666",
                                     }}
                                 >
-                                    Huỷ đơn
+                                    Cancel order
                                 </CustomText>
                             </TouchableOpacity>
                         </View>

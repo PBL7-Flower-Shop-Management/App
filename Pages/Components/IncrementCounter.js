@@ -28,9 +28,10 @@ export const IncrementCounter = ({
             setInput(newValue.toString());
         } else {
             ShowAlert({
-                title: "Cảnh báo",
-                alertContent: "Mặt hàng này chỉ còn lại " + max + " sản phẩm!",
-                firstBtnName: "Đóng",
+                title: "Warning",
+                alertContent:
+                    "This item is only available " + max + " product(s)!",
+                firstBtnName: "Close",
                 handleFirstBtn: () => {},
             });
         }
@@ -41,9 +42,10 @@ export const IncrementCounter = ({
             setInput(newValue.toString());
         } else {
             ShowAlert({
-                title: "Cảnh báo",
-                alertContent: "Số lượng sản phẩm mua phải lớn hơn 0!",
-                firstBtnName: "Đóng",
+                title: "Warning",
+                alertContent:
+                    "The number of products purchased must be greater than 0!",
+                firstBtnName: "Close",
                 handleFirstBtn: () => {},
             });
         }
@@ -57,7 +59,7 @@ export const IncrementCounter = ({
             <View>
                 {showLabel && (
                     <CustomText style={{ fontFamily: "Be Vietnam Medium" }}>
-                        Số lượng
+                        Quantity
                     </CustomText>
                 )}
                 <View className="flex-row items-center border border-blue-400 rounded-md my-1">
@@ -107,7 +109,7 @@ export const IncrementCounter = ({
                                 marginBottom: 5,
                             }}
                         >
-                            Tạm tính
+                            Temporary payment
                         </CustomText>
                     )}
                     <CustomText style={{ fontSize: 17 }}>

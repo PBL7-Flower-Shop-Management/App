@@ -36,7 +36,7 @@ const ProductList = ({ title, products, navigation }) => {
                             Linking.openURL("https://www.facebook.com/")
                         }
                     >
-                        Xem tất cả
+                        View all
                     </CustomText>
                 </View>
             )}

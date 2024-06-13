@@ -19,7 +19,7 @@ const ReviewList = ({ title, overview, reviews }) => {
                 </CustomText>
                 {!reviews ? (
                     <View>
-                        <CustomText>Chưa có lượt đánh giá nào!</CustomText>
+                        <CustomText>There are no reviews yet!</CustomText>
                     </View>
                 ) : (
                     <View>
@@ -39,7 +39,7 @@ const ReviewList = ({ title, overview, reviews }) => {
                                 imageSize={25}
                             />
                             <CustomText className="text-gray-400">
-                                {overview.feedbacksTotal} đánh giá
+                                {overview.feedbacksTotal} reviews
                             </CustomText>
                         </View>
                         {reviews.map((review, id) => (
@@ -84,7 +84,7 @@ const ReviewList = ({ title, overview, reviews }) => {
                                         source={require("../../Public/Images/like.png")}
                                     />
                                     <CustomText>
-                                        Hữu ích ({review.numberOfLikes})
+                                        Like ({review.numberOfLikes})
                                     </CustomText>
                                 </TouchableOpacity>
                             </View>

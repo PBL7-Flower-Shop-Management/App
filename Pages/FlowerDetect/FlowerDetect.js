@@ -104,7 +104,7 @@ const FlowerDetect = ({ navigation, route }) => {
                         }
                     />
                 </TouchableOpacity>
-                <CustomText style={styles.title}>Nhận diện hoa</CustomText>
+                <CustomText style={styles.title}>Flower detect</CustomText>
                 <TouchableOpacity
                     style={styles.btnCancel}
                     onPress={() => navigation.navigate("Home")}
@@ -153,7 +153,7 @@ const FlowerDetect = ({ navigation, route }) => {
                                 color: "white",
                             }}
                         >
-                            Nhận diện
+                            Detect
                         </CustomText>
                     </TouchableOpacity>
 
@@ -179,7 +179,7 @@ const FlowerDetect = ({ navigation, route }) => {
                                 color: "white",
                             }}
                         >
-                            Đổi ảnh
+                            Change image
                         </CustomText>
                     </TouchableOpacity>
                 </View>

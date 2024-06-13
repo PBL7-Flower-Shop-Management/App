@@ -168,7 +168,7 @@ const Home = ({ navigation, route }) => {
                             />
                             <TextInput
                                 ref={inputRef}
-                                placeholder="Tìm kiếm"
+                                placeholder="Search"
                                 placeholderTextColor="gray"
                                 value={txtSearch}
                                 onChangeText={SetTxtSearch}
@@ -212,7 +212,7 @@ const Home = ({ navigation, route }) => {
             >
                 <View className="">
                     <ProductList
-                        title={"Bán chạy nhất"}
+                        title={"Best seller"}
                         products={flowerBestSeller}
                         navigation={navigation}
                     />
@@ -220,7 +220,7 @@ const Home = ({ navigation, route }) => {
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <ProductList
-                        title={"Trang trí nhà cửa"}
+                        title={"Home decoration"}
                         products={decorativeFlowers}
                         navigation={navigation}
                     />
@@ -228,7 +228,7 @@ const Home = ({ navigation, route }) => {
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <ProductList
-                        title={"Làm quà tặng"}
+                        title={"For the gift"}
                         products={flowersAsGifts}
                         navigation={navigation}
                     />
@@ -236,14 +236,14 @@ const Home = ({ navigation, route }) => {
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <FeedbackList
-                        title={"Phản hồi tích cực"}
+                        title={"Positive feedback"}
                         feedbacks={feedbackList}
                     />
                 </View>
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <SuggestedProductList
-                        title={"Gợi ý cho bạn"}
+                        title={"Suggestions for you"}
                         products={suggestedProductList}
                         navigation={navigation}
                     />

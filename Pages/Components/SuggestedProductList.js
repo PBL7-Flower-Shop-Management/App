@@ -86,7 +86,7 @@ const SuggestedProductList = ({
                                                 <CustomText
                                                     style={{ fontSize: 9 }}
                                                 >
-                                                    | Đã bán{" "}
+                                                    | Sold{" "}
                                                     {ConvertToShortSoldQuantity(
                                                         product.soldQuantity
                                                     )}
@@ -194,7 +194,7 @@ const SuggestedProductList = ({
                                                     <CustomText
                                                         style={{ fontSize: 9 }}
                                                     >
-                                                        | Đã bán{" "}
+                                                        | Sold{" "}
                                                         {ConvertToShortSoldQuantity(
                                                             products[id + 1]
                                                                 .soldQuantity

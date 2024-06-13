@@ -24,12 +24,14 @@ import UrlConfig from "../../Config/UrlConfig.js";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { CartContext } from "../../Context/CartContext.js";
 import { PopupContext } from "../../Context/PopupContext.js";
+import * as ImagePicker from "expo-image-picker";
+import { appendJsonToFormData } from "../../Utils/helper.js";
 
-const Account = ({ navigation }) => {
+const Account = ({ navigation, route }) => {
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const [favoriteFlowers, setFavoriteFlowers] = useState([]);
     const [userInformation, setUserInformation] = useState(null);
-    const { refreshToken, userInfo } = useContext(AuthContext);
+    const { refreshToken, userInfo, SetUserInfo } = useContext(AuthContext);
     const [isLoading, SetIsLoading] = useState(false);
     const { setCartVisible } = useContext(CartContext);
     const { setVisible } = useContext(PopupContext);
@@ -52,7 +54,7 @@ const Account = ({ navigation }) => {
         );
 
         if (response.succeeded) {
-            setUserInformation(response.data);
+            SetUserInfo({ ...userInfo, ...response.data });
         } else {
             Toast.show({
                 type: "error",
@@ -89,6 +91,62 @@ const Account = ({ navigation }) => {
         SetIsLoading(false);
     };
 
+    const chooseImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        if (!result.canceled) {
+            await updateAvatar(result.assets[0].uri);
+        }
+    };
+
+    const updateAvatar = async (uri) => {
+        SetIsLoading(true);
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        const formData = new FormData();
+        const image = {
+            uri: uri,
+            type: "image/jpeg",
+            name: "photo.jpg",
+        };
+        formData.append("avatar", image);
+
+        const response = await FetchApi(
+            UrlConfig.user.updateProfile,
+            "PUT",
+            result.data,
+            appendJsonToFormData(formData, {
+                name: userInformation.name,
+                email: userInformation.email,
+            }),
+            true
+        );
+        if (response.succeeded) {
+            SetUserInfo({ ...userInfo, avatarUrl: response.data.avatarUrl });
+            Toast.show({
+                type: "success",
+                text1: "Update avatar successfully!",
+            });
+        } else
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        SetIsLoading(false);
+    };
+
     useEffect(() => {
         if (userInfo) {
             SetIsLoading(true);
@@ -96,6 +154,21 @@ const Account = ({ navigation }) => {
             getFavouriteFlowers();
         }
     }, []);
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserInformation(userInfo);
+        }
+    }, [userInfo]);
+
+    useEffect(() => {
+        if (route.params?.changePasswordSuccess) {
+            Toast.show({
+                type: "success",
+                text1: "Change password successfully! Let's login!",
+            });
+        }
+    }, [route.params]);
 
     return (
         <View className="flex-1 bg-white p-3">
@@ -114,7 +187,7 @@ const Account = ({ navigation }) => {
                 <CustomText
                     style={{ color: "black", fontFamily: "Be Vietnam bold" }}
                 >
-                    Tài khoản
+                    Account
                 </CustomText>
                 <View className="flex-row gap-x-2">
                     {userInfo && (
@@ -152,7 +225,10 @@ const Account = ({ navigation }) => {
                                     }
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity className="absolute -bottom-1 right-1 p-1.5 rounded-full bg-gray-300">
+                            <TouchableOpacity
+                                className="absolute -bottom-1 right-1 p-1.5 rounded-full bg-gray-300"
+                                onPress={async () => await chooseImage()}
+                            >
                                 <Image
                                     className="h-5 w-5"
                                     source={require("../../Public/Images/pen.png")}
@@ -232,7 +308,7 @@ const Account = ({ navigation }) => {
                                     fontFamily: "Be Vietnam bold",
                                 }}
                             >
-                                Đơn hàng của tôi
+                                My orders
                             </CustomText>
                             <Image
                                 className="w-6 h-6"
@@ -263,7 +339,7 @@ const Account = ({ navigation }) => {
                                                 source={icon}
                                             />
                                         </View>
-                                        <View className="w-20 items-center">
+                                        <View className="w-42 items-center">
                                             <CustomText>
                                                 {orderStatus[status]}
                                             </CustomText>
@@ -283,7 +359,7 @@ const Account = ({ navigation }) => {
                                     fontFamily: "Be Vietnam bold",
                                 }}
                             >
-                                Sản phẩm ưa thích
+                                Favourite flowers
                             </CustomText>
                             <Image
                                 className="w-6 h-6"
@@ -297,23 +373,23 @@ const Account = ({ navigation }) => {
                             />
                         ) : (
                             <CustomText>
-                                Bạn chưa có sản phẩm ưa thích nào
+                                You don't have any favorite products yet
                             </CustomText>
                         )}
                     </Pressable>
                 </>
             ) : (
                 <View className="items-center justify-center h-4/6">
-                    <CustomText>Đăng nhập để xem hồ sơ của bạn!</CustomText>
+                    <CustomText>Login to view your profile!</CustomText>
                     <TouchableOpacity
-                        className="border rounded-md p-2 mt-4 w-32 items-center justify-center"
-                        style={{ backgroundColor: "#152259" }}
+                        className="rounded-md p-2 mt-4 w-32 items-center justify-center"
+                        style={{ backgroundColor: "#60A5FA" }}
                         onPress={() => {
                             setVisible(true);
                         }}
                     >
                         <CustomText style={{ color: "white" }}>
-                            Đăng nhập
+                            Login
                         </CustomText>
                     </TouchableOpacity>
                 </View>

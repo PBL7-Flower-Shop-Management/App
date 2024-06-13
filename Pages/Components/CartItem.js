@@ -49,7 +49,9 @@ const CartItem = ({
                         className="ml-2"
                         onPress={handleDeleteItem}
                     >
-                        <CustomText className="text-blue-400">Xoá</CustomText>
+                        <CustomText className="text-blue-400">
+                            Delete
+                        </CustomText>
                     </TouchableOpacity>
                 </View>
             </View>

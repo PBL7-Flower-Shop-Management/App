@@ -87,7 +87,7 @@ function Category({ navigation }) {
                     />
                     <TextInput
                         ref={inputRef}
-                        placeholder="Tìm kiếm"
+                        placeholder="Search"
                         placeholderTextColor="gray"
                         value={txtSearch}
                         onChangeText={SetTxtSearch}
@@ -189,7 +189,7 @@ function Category({ navigation }) {
                                 source={require("../../Public/Images/no-product.png")}
                             />
                             <CustomText style={{ fontSize: 14 }}>
-                                Chưa có sản phẩm {"\n"} cho danh mục này!
+                                There are no products {"\n"} for this category!
                             </CustomText>
                             <View className="mb-44"></View>
                         </View>

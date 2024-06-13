@@ -37,6 +37,7 @@ export const FetchApi = async (
             return response;
         })
         .catch((error) => {
+            console.log(error);
             return { succeeded: false, message: error.message ?? error };
         });
 };

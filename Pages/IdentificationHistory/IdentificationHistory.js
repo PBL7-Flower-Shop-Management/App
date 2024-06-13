@@ -75,7 +75,7 @@ function IdentificationHistory() {
             <View className="flex-row items-end justify-center pt-12 pb-3 bg-blue-400">
                 <View className="">
                     <CustomText className="text-white" style={{ fontSize: 16 }}>
-                        Lịch sử nhận dạng hoa
+                        Flower detect history
                     </CustomText>
                 </View>
             </View>
@@ -106,7 +106,7 @@ function IdentificationHistory() {
                                     source={require("../../Public/Images/not-detect.png")}
                                 />
                                 <CustomText style={{ fontSize: 14 }}>
-                                    Bạn chưa nhận dạng hoa lần nào!
+                                    You have not identified flowers yet!
                                 </CustomText>
                             </View>
                         </View>
@@ -114,18 +114,16 @@ function IdentificationHistory() {
                 </ScrollView>
             ) : (
                 <View className="items-center justify-center h-4/6">
-                    <CustomText>
-                        Đăng nhập để xem lịch sử nhận dạng của bạn!
-                    </CustomText>
+                    <CustomText>Sign in to see your detect history!</CustomText>
                     <TouchableOpacity
-                        className="border rounded-md p-2 mt-4 w-32 items-center justify-center"
-                        style={{ backgroundColor: "#152259" }}
+                        className="rounded-md p-2 mt-4 w-32 items-center justify-center"
+                        style={{ backgroundColor: "#60A5FA" }}
                         onPress={() => {
                             setVisible(true);
                         }}
                     >
                         <CustomText style={{ color: "white" }}>
-                            Đăng nhập
+                            Login
                         </CustomText>
                     </TouchableOpacity>
                 </View>

@@ -113,3 +113,9 @@ export const ConvertToShipDate = (dateStr) => {
 
     return dayOfWeek + ", " + formatDate;
 };
+
+export const appendJsonToFormData = (formData, json) => {
+    formData.append("body", JSON.stringify(json));
+
+    return formData;
+};

@@ -112,7 +112,7 @@ const Order = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <View className="">
                     <CustomText className="text-white" style={{ fontSize: 16 }}>
-                        Đơn hàng của tôi
+                        My orders
                     </CustomText>
                 </View>
             </View>
@@ -127,7 +127,7 @@ const Order = ({ navigation, route }) => {
                     />
                     <TextInput
                         ref={inputRef}
-                        placeholder="Tìm mã đơn hàng, tên sản phẩm, ..."
+                        placeholder="Find order code, product name,..."
                         placeholderTextColor="gray"
                         value={txtSearch}
                         onChangeText={SetTxtSearch}
@@ -172,7 +172,7 @@ const Order = ({ navigation, route }) => {
                                 fontFamily: "Be Vietnam bold",
                             }}
                         >
-                            Tất cả đơn
+                            All orders
                         </CustomText>
                     </TouchableOpacity>
                     {Object.values(orderStatus).map((value, id) => (
@@ -219,7 +219,7 @@ const Order = ({ navigation, route }) => {
                                                             "Be Vietnam bold",
                                                     }}
                                                 >
-                                                    Giao vào{" "}
+                                                    Ship on{" "}
                                                     {ConvertToShipDate(
                                                         o.shipDate
                                                     )}
@@ -256,7 +256,7 @@ const Order = ({ navigation, route }) => {
                                                                 o.orderDetails
                                                                     .length
                                                             }{" "}
-                                                            sản phẩm |{" "}
+                                                            product(s) |{" "}
                                                             {o.totalPrice}$
                                                         </CustomText>
                                                     </View>
@@ -275,12 +275,12 @@ const Order = ({ navigation, route }) => {
                                                         }
                                                     >
                                                         <CustomText>
-                                                            Xem chi tiết
+                                                            View detail
                                                         </CustomText>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity className="items-center border border-red-500 p-2 w-5/12 px-4 rounded-lg">
                                                         <CustomText>
-                                                            Huỷ đơn
+                                                            Cancel order
                                                         </CustomText>
                                                     </TouchableOpacity>
                                                 </View>
@@ -297,7 +297,7 @@ const Order = ({ navigation, route }) => {
                             source={require("../../Public/Images/noOrder.png")}
                         />
                         <CustomText style={{ fontSize: 14 }}>
-                            Chưa có đơn hàng nào!
+                            No orders yet!
                         </CustomText>
                     </View>
                 )}

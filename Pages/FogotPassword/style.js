@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        backgroundColor: "#152259",
+        backgroundColor: "#60A5FA",
     },
     waitingCircle: {
         position: "absolute",
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         fontSize: 45 * scale,
         fontFamily: "Inter",
         fontStyle: "normal",
-        color: "#152259",
+        color: "#60A5FA",
         opacity: 1,
         textAlign: "center",
         textAlignVertical: "center",
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     btnForgot: {
         borderRadius: 5,
-        backgroundColor: "#152259",
+        backgroundColor: "#60A5FA",
         width: 246,
         height: 56,
         alignItems: "center",

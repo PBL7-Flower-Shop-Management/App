@@ -66,10 +66,10 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
 
     const handleDeleteItem = (products) => {
         ShowAlert({
-            title: "Cảnh báo",
-            alertContent: "Bạn có chắc chắn muốn xoá món hàng này?",
-            firstBtnName: "Huỷ",
-            secondBtnName: "Xoá",
+            title: "Warning",
+            alertContent: "Are you sure you want to delete this item??",
+            firstBtnName: "Cancel",
+            secondBtnName: "Delete",
             handleFirstBtn: () => {},
             handleSecondBtn: () => {
                 const listNewCart = listCart.filter(
@@ -90,11 +90,11 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
             });
         else
             ShowAlert({
-                title: "Cảnh báo",
+                title: "Warning",
                 alertContent:
-                    "Bạn có chắc chắn muốn xoá tất cả những món hàng đã chọn?",
-                firstBtnName: "Huỷ",
-                secondBtnName: "Xoá",
+                    "Are you sure you want to delete all selected items??",
+                firstBtnName: "Cancel",
+                secondBtnName: "Delete",
                 handleFirstBtn: () => {},
                 handleSecondBtn: () => {
                     const selectedId = selectedCart.map((sc) => sc.id);
@@ -210,7 +210,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                     fontSize: 18,
                                 }}
                             >
-                                Giỏ hàng
+                                Cart
                             </CustomText>
                         </View>
                     </View>
@@ -227,7 +227,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                             />
                         </TouchableOpacity>
                         <CustomText>
-                            Tất cả ({listCart.length} sản phẩm)
+                            All ({listCart.length} products)
                         </CustomText>
                         <TouchableOpacity
                             className="flex-grow items-end"
@@ -271,7 +271,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                     </View>
                                     <View className="flex-row justify-between">
                                         <View>
-                                            <CustomText>Tổng tiền</CustomText>
+                                            <CustomText>Total price</CustomText>
                                             <CustomText
                                                 className="text-red-400"
                                                 style={{ fontSize: 16 }}
@@ -281,7 +281,8 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                         </View>
                                         <TouchableOpacity className="bg-red-400 rounded-md justify-center px-5">
                                             <CustomText className="text-white">
-                                                Mua Hàng ({selectedCart.length})
+                                                Buy products (
+                                                {selectedCart.length})
                                             </CustomText>
                                         </TouchableOpacity>
                                     </View>
@@ -289,8 +290,8 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                             ) : (
                                 <>
                                     <CustomText>
-                                        Chưa có sản phẩm nào được thêm vào giỏ
-                                        hàng!
+                                        No products have been added to the cart
+                                        yet row!
                                     </CustomText>
                                     <Button
                                         title="reload"
@@ -302,17 +303,17 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                     ) : (
                         <View className="items-center justify-center h-3/5">
                             <CustomText>
-                                Đăng nhập để quản lý giỏ hàng của bạn!
+                                Log in to manage your shopping cart!
                             </CustomText>
                             <TouchableOpacity
-                                className="border rounded-md p-2 mt-4 w-32 items-center justify-center"
-                                style={{ backgroundColor: "#152259" }}
+                                className="rounded-md p-2 mt-4 w-32 items-center justify-center"
+                                style={{ backgroundColor: "#60A5FA" }}
                                 onPress={() => {
                                     onNavigateToLogin();
                                 }}
                             >
                                 <CustomText style={{ color: "white" }}>
-                                    Đăng nhập
+                                    Login
                                 </CustomText>
                             </TouchableOpacity>
                         </View>

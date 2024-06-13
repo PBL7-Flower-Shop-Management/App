@@ -1,18 +1,201 @@
-import React, { useState } from "react";
-import { View, StatusBar, TouchableOpacity, Image, Modal } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import {
+    View,
+    StatusBar,
+    TouchableOpacity,
+    Image,
+    Modal,
+    ActivityIndicator,
+    TextInput,
+    TouchableWithoutFeedback,
+} from "react-native";
+import { Formik } from "formik";
+import * as yup from "yup";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { CustomText } from "../Components/CustomText";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../Components/ToastConfig.js";
+import { FetchApi } from "../../Utils/FetchApi.js";
+import UrlConfig from "../../Config/UrlConfig.js";
+import { AuthContext } from "../../Context/AuthContext.js";
+import * as ImagePicker from "expo-image-picker";
+import { appendJsonToFormData } from "../../Utils/helper.js";
+import { scale, textInputDefaultSize } from "../../Utils/constants.js";
 
 const Profile = ({ navigation }) => {
     const [isModalVisible, SetIsModalVisible] = useState(false);
-    const user = {
-        name: "Nguyễn Thế Đăng Hoan",
-        citizenId: "049202013212",
-        email: "nguyenthedanghoan@gmail.com",
-        phoneNumber: "0852556258",
-        role: "Customer",
-        avatar: "https://th.bing.com/th/id/OIP.ebPexDgG2kic7e_ubIhaqgHaEK?rs=1&pid=ImgDetMain",
+    const [userInformation, setUserInformation] = useState(null);
+    const { refreshToken, userInfo, SetUserInfo } = useContext(AuthContext);
+    const [isLoading, SetIsLoading] = useState(false);
+    const [key, setKey] = useState("");
+    const [informationType, setInformationType] = useState("");
+    const [isPopUpVisible, setIsPopUpVisible] = useState(false);
+
+    const validationSchema = yup.object().shape({
+        name: yup
+            .string()
+            .trim()
+            .required("Name is required")
+            .matches(
+                /^[ \p{L}]+$/u,
+                "Name field only contains unicode characters or spaces!"
+            ),
+        citizenId: yup
+            .string()
+            .trim()
+            .transform((curr, orig) => (orig === "" ? null : curr))
+            .matches(/^[0-9]*$/u, "CitizenId field only contains numbers!"),
+        phoneNumber: yup
+            .string()
+            .trim()
+            .transform((curr, orig) => (orig === "" ? null : curr))
+            .matches(/^[0-9]*$/u, "Phone number field only contains numbers!"),
+        email: yup
+            .string()
+            .trim()
+            .required("Email is required")
+            .email("Please provide a valid email!"),
+    });
+
+    const getUserInformation = async () => {
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        const response = await FetchApi(
+            UrlConfig.user.getProfile,
+            "GET",
+            result.data
+        );
+
+        if (response.succeeded) {
+            SetUserInfo({ ...userInfo, ...response.data });
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        }
+        SetIsLoading(false);
     };
+
+    const chooseImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        if (!result.canceled) {
+            await updateAvatar(result.assets[0].uri);
+        }
+    };
+
+    const updateAvatar = async (uri) => {
+        SetIsLoading(true);
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        const formData = new FormData();
+        const image = {
+            uri: uri,
+            type: "image/jpeg",
+            name: "photo.jpg",
+        };
+        formData.append("avatar", image);
+
+        const response = await FetchApi(
+            UrlConfig.user.updateProfile,
+            "PUT",
+            result.data,
+            appendJsonToFormData(formData, {
+                name: userInformation.name,
+                email: userInformation.email,
+            }),
+            true
+        );
+        if (response.succeeded) {
+            SetUserInfo({ ...userInfo, avatarUrl: response.data.avatarUrl });
+            Toast.show({
+                type: "success",
+                text1: "Update avatar successfully!",
+            });
+        } else
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+        SetIsLoading(false);
+    };
+
+    const handleSubmit = async (value) => {
+        SetIsLoading(true);
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        const response = await FetchApi(
+            UrlConfig.user.updateProfile,
+            "PUT",
+            result.data,
+            {
+                name: userInfo.name,
+                citizenId: userInfo.citizenId,
+                email: userInfo.email,
+                phoneNumber: userInfo.phoneNumber,
+                avatarUrl: userInfo.avatarUrl,
+                [key]: value,
+            }
+        );
+        if (response.succeeded) {
+            SetUserInfo({ ...userInfo, [key]: response.data[key] });
+            Toast.show({
+                type: "success",
+                text1: "Update information successfully!",
+            });
+            setIsPopUpVisible(false);
+        } else {
+            Toast.show({
+                type: "error",
+                text1: response.message,
+            });
+            setIsPopUpVisible(true);
+        }
+        SetIsLoading(false);
+    };
+
+    useEffect(() => {
+        if (userInfo) {
+            SetIsLoading(true);
+            getUserInformation();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserInformation(userInfo);
+        }
+    }, [userInfo]);
+
     return (
         <View className="flex-1 bg-gray-100">
             {/*statusbar to set wifi, battery... to white*/}
@@ -21,11 +204,18 @@ const Profile = ({ navigation }) => {
                 translucent
                 backgroundColor="transparent"
             />
+            {isLoading && (
+                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center z-10">
+                    <ActivityIndicator size="large" color="green" />
+                </View>
+            )}
             <View className="relative h-1/4 bg-blue-400">
                 <View className="flex-row items-center h-10 mt-10">
                     <TouchableOpacity
                         className="absolute z-10 p-4"
-                        onPress={() => navigation.goBack()}
+                        onPress={() => {
+                            navigation.goBack();
+                        }}
                     >
                         <Image
                             className="h-6 w-6"
@@ -38,7 +228,7 @@ const Profile = ({ navigation }) => {
                             className="self-center text-white"
                             style={{ fontSize: 14 }}
                         >
-                            Thông tin tài khoản
+                            Account information
                         </CustomText>
                     </View>
                 </View>
@@ -51,19 +241,22 @@ const Profile = ({ navigation }) => {
                         <Image
                             className="h-40 w-40 rounded-full"
                             source={
-                                user.avatar
-                                    ? { uri: user.avatar }
+                                userInformation?.avatarUrl
+                                    ? { uri: userInformation.avatarUrl }
                                     : require("../../Public/Images/notFoundAvatar.png")
                             }
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity className="absolute -bottom-1 right-4 p-1.5 rounded-full bg-gray-300">
+                    <TouchableOpacity
+                        className="absolute -bottom-1 right-4 p-1.5 rounded-full bg-gray-300"
+                        onPress={async () => await chooseImage()}
+                    >
                         <Image
                             className="h-5 w-5"
                             source={require("../../Public/Images/pen.png")}
                         />
                     </TouchableOpacity>
-                    {user != null && (
+                    {userInfo != null && (
                         <Modal
                             visible={isModalVisible}
                             transparent={true}
@@ -76,7 +269,7 @@ const Profile = ({ navigation }) => {
                                 index={0}
                                 imageUrls={[
                                     {
-                                        url: user.avatar,
+                                        url: userInformation?.avatarUrl,
                                     },
                                 ]}
                                 renderIndicator={() => {}}
@@ -92,7 +285,11 @@ const Profile = ({ navigation }) => {
                 <View className="gap-y-0.5 pb-4 pt-4">
                     <TouchableOpacity
                         className="bg-white flex-row px-3 py-4 items-center"
-                        onPress={() => navigation.navigate("Profile")}
+                        onPress={() => {
+                            setKey("name");
+                            setInformationType("Full name");
+                            setIsPopUpVisible(true);
+                        }}
                     >
                         <Image
                             className="h-5 w-5 ml-1 mr-3"
@@ -100,9 +297,9 @@ const Profile = ({ navigation }) => {
                             source={require("../../Public/Images/lightUser.png")}
                         />
                         <View>
-                            <CustomText>Họ và tên</CustomText>
+                            <CustomText>Full name</CustomText>
                             <CustomText className="text-gray-400">
-                                {user.name ?? "Thêm họ tên"}
+                                {userInformation?.name ?? "Add name"}
                             </CustomText>
                         </View>
                         <View className="flex-grow justify-center items-end">
@@ -116,7 +313,11 @@ const Profile = ({ navigation }) => {
                     <View className="-mx-20 h-0.5 bg-gray-100"></View>
                     <TouchableOpacity
                         className="bg-white flex-row px-3 py-4 items-center"
-                        onPress={() => navigation.navigate("Profile")}
+                        onPress={() => {
+                            setKey("citizenId");
+                            setInformationType("Citizen id");
+                            setIsPopUpVisible(true);
+                        }}
                     >
                         <Image
                             className="h-7 w-7 mr-2"
@@ -124,9 +325,9 @@ const Profile = ({ navigation }) => {
                             source={require("../../Public/Images/card.png")}
                         />
                         <View>
-                            <CustomText>CCCD/CMND</CustomText>
+                            <CustomText>Citizen id</CustomText>
                             <CustomText className="text-gray-400">
-                                {user.citizenId ?? "Thêm CCCD/CMND"}
+                                {userInformation?.citizenId ?? "Add citizen id"}
                             </CustomText>
                         </View>
                         <View className="flex-grow justify-center items-end">
@@ -140,7 +341,11 @@ const Profile = ({ navigation }) => {
                     <View className="-mx-10 h-0.5 bg-gray-100"></View>
                     <TouchableOpacity
                         className="bg-white flex-row px-3 py-4 items-center"
-                        onPress={() => navigation.navigate("Profile")}
+                        onPress={() => {
+                            setKey("phoneNumber");
+                            setInformationType("Phone number");
+                            setIsPopUpVisible(true);
+                        }}
                     >
                         <Image
                             className="h-5 w-5 ml-1 mr-3"
@@ -148,9 +353,10 @@ const Profile = ({ navigation }) => {
                             source={require("../../Public/Images/phone.png")}
                         />
                         <View>
-                            <CustomText>Số điện thoại</CustomText>
+                            <CustomText>Phone number</CustomText>
                             <CustomText className="text-gray-400">
-                                {user.phoneNumber ?? "Thêm số điện thoại"}
+                                {userInformation?.phoneNumber ??
+                                    "Add phone number"}
                             </CustomText>
                         </View>
                         <View className="flex-grow justify-center items-end">
@@ -164,7 +370,11 @@ const Profile = ({ navigation }) => {
                     <View className="-mx-10 h-0.5 bg-gray-100"></View>
                     <TouchableOpacity
                         className="bg-white flex-row px-3 py-4 items-center"
-                        onPress={() => navigation.navigate("Profile")}
+                        onPress={() => {
+                            setKey("email");
+                            setInformationType("Email");
+                            setIsPopUpVisible(true);
+                        }}
                     >
                         <Image
                             className="h-7 w-7 mr-2"
@@ -174,7 +384,7 @@ const Profile = ({ navigation }) => {
                         <View>
                             <CustomText>Email</CustomText>
                             <CustomText className="text-gray-400">
-                                {user.email ?? "Thêm email"}
+                                {userInformation?.email ?? "Thêm email"}
                             </CustomText>
                         </View>
                         <View className="flex-grow justify-center items-end">
@@ -188,14 +398,14 @@ const Profile = ({ navigation }) => {
                     <View className="-mx-10 h-0.5 bg-gray-100"></View>
                     <TouchableOpacity
                         className="bg-white flex-row px-3 py-4 items-center"
-                        onPress={() => navigation.navigate("Profile")}
+                        onPress={() => navigation.navigate("ChangePassword")}
                     >
                         <Image
                             className="h-6 w-6 ml-0.5 mr-2"
                             style={{ tintColor: "gray" }}
                             source={require("../../Public/Images/darkLock.png")}
                         />
-                        <CustomText>Thiết lập mật khẩu</CustomText>
+                        <CustomText>Change password</CustomText>
                         <View className="flex-grow justify-center items-end">
                             <Image
                                 className="h-6 w-6"
@@ -206,6 +416,184 @@ const Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <Formik
+                enableReinitialize={true}
+                initialValues={
+                    userInformation
+                        ? {
+                              name: userInformation.name,
+                              citizenId: userInformation.citizenId,
+                              phoneNumber: userInformation.phoneNumber,
+                              email: userInformation.email,
+                          }
+                        : {
+                              name: "",
+                              citizenId: "",
+                              phoneNumber: "",
+                              email: "",
+                          }
+                }
+                validationSchema={validationSchema}
+                onSubmit={async (values) => {
+                    handleSubmit(values[key]);
+                }}
+                validateOnChange
+            >
+                {({
+                    setFieldValue,
+                    handleChange,
+                    handleBlur,
+                    values,
+                    errors,
+                    touched,
+                }) => (
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isPopUpVisible}
+                        onRequestClose={() => {
+                            setIsPopUpVisible(!isPopUpVisible);
+                        }}
+                    >
+                        <TouchableWithoutFeedback
+                            onPressOut={() => {
+                                setIsPopUpVisible(false);
+                            }}
+                        >
+                            <View className="flex-1 justify-center items-center">
+                                <TouchableWithoutFeedback>
+                                    <View
+                                        className="items-center bg-white rounded-lg py-5 w-5/6"
+                                        style={{
+                                            shadowColor: "#000",
+                                            shadowOffset: {
+                                                width: 0,
+                                                height: 2,
+                                            },
+                                            shadowOpacity: 0.25,
+                                            shadowOpacity: 0.25,
+                                            elevation: 5,
+                                        }}
+                                    >
+                                        <View className="flex-row w-full items-center justify-center mb-4">
+                                            <TouchableOpacity
+                                                className="absolute left-1 p-2"
+                                                onPress={() =>
+                                                    setIsPopUpVisible(false)
+                                                }
+                                            >
+                                                <Image
+                                                    source={require("../../Public/Images/darkCancel.png")}
+                                                />
+                                            </TouchableOpacity>
+                                            <CustomText
+                                                style={{
+                                                    fontSize: 15 * scale,
+                                                }}
+                                            >
+                                                Edit information
+                                            </CustomText>
+                                        </View>
+                                        <View className="flex-row w-full gap-2 px-3">
+                                            <View className="h-10 justify-center">
+                                                <CustomText>
+                                                    {informationType}
+                                                </CustomText>
+                                            </View>
+                                            <View className="flex-column flex-initial flex-grow mb-3">
+                                                <TextInput
+                                                    className="h-10 w-full border rounded-md p-3"
+                                                    style={{
+                                                        borderColor: "#43BDD4",
+                                                        fontSize:
+                                                            textInputDefaultSize *
+                                                            scale,
+                                                        color: "#5C5D60",
+                                                        opacity: 1,
+                                                    }}
+                                                    placeholder={
+                                                        informationType
+                                                    }
+                                                    value={values[key]}
+                                                    onChangeText={handleChange(
+                                                        key
+                                                    )}
+                                                    onBlur={handleBlur(key)}
+                                                ></TextInput>
+                                                {errors[key] && (
+                                                    <CustomText
+                                                        style={{
+                                                            color: "red",
+                                                            fontWeight: "bold",
+                                                            marginTop: 5,
+                                                        }}
+                                                    >
+                                                        {errors[key]}
+                                                    </CustomText>
+                                                )}
+                                            </View>
+                                        </View>
+                                        <View
+                                            style={{
+                                                flexDirection: "row",
+                                                gap: 20,
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                className="items-center justify-center rounded-md p-3 w-2/5 bg-blue-400"
+                                                onPress={async (e) => {
+                                                    if (!errors[key]) {
+                                                        setIsPopUpVisible(
+                                                            false
+                                                        );
+                                                        handleSubmit(
+                                                            values[key]
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <CustomText
+                                                    style={{
+                                                        color: "white",
+                                                        fontFamily:
+                                                            "Be Vietnam bold",
+                                                    }}
+                                                >
+                                                    Edit
+                                                </CustomText>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                className="items-center justify-center rounded-md p-3 w-2/5"
+                                                style={{
+                                                    backgroundColor: "#F1F1F1",
+                                                }}
+                                                onPress={() => {
+                                                    setIsPopUpVisible(false);
+                                                    setFieldValue(
+                                                        key,
+                                                        userInformation[key]
+                                                    );
+                                                }}
+                                            >
+                                                <CustomText
+                                                    style={{
+                                                        color: "#4F4F4F",
+                                                        fontFamily:
+                                                            "Be Vietnam bold",
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </CustomText>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Modal>
+                )}
+            </Formik>
+            <Toast config={toastConfig} />
         </View>
     );
 };

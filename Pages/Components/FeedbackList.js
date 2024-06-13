@@ -25,7 +25,7 @@ const FeedbackList = ({ title, feedbacks }) => {
                     }}
                     onPress={() => Linking.openURL("https://www.facebook.com/")}
                 >
-                    Xem tất cả
+                    View all
                 </CustomText>
             </View>
 
