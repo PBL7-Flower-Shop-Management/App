@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
             "471873188950-h3uuv48rtjnq3247jdp3f1o09isufju9.apps.googleusercontent.com",
         androidClientId:
             "471873188950-s00cju1jddoofngml7tton6ck9q31uk5.apps.googleusercontent.com",
-        redirectUri: "com.danghoanexpo.Mobile:/",
+        redirectUri: "com.danghoanexpo.mobile:/",
         scopes: ["profile", "email"],
         responseType: ResponseType.IdToken,
     });

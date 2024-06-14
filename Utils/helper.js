@@ -119,3 +119,7 @@ export const appendJsonToFormData = (formData, json) => {
 
     return formData;
 };
+
+export const isNumberic = (value) => {
+    return !isNaN(parseFloat(value)) && isFinite(value);
+};

@@ -19,7 +19,7 @@ const SuggestedProductList = ({
     title,
     products,
     isShowSoldQuantity = true,
-    betweenDistance = 10,
+    betweenDistance = 7,
     paddingBottom = 40,
     navigation,
     refreshing,
@@ -41,7 +41,7 @@ const SuggestedProductList = ({
             )}
 
             <ScrollView
-                className="-mx-1"
+                className=""
                 refreshControl={
                     <RefreshControl
                         style={{ tintColor: "green" }}

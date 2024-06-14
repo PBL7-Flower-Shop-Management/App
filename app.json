@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mobile",
-    "slug": "Mobile",
+    "name": "mobile",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.danghoanexpo.Mobile",
+      "bundleIdentifier": "com.danghoanexpo.mobile",
       "infoPlist": {
         "CFBundleURLTypes": [
           {
@@ -32,22 +32,23 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.danghoanexpo.Mobile"
+      "package": "com.danghoanexpo.mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "9355d3a7-c7fb-4ef8-82cf-7b280c3b4b7f"
+        "projectId": "56990f78-2ed4-4622-b7ce-267b468d5f49"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/9355d3a7-c7fb-4ef8-82cf-7b280c3b4b7f"
+      "url": "https://u.expo.dev/56990f78-2ed4-4622-b7ce-267b468d5f49"
     },
-    "scheme": "com.danghoanexpo.mobile"
+    "scheme": "com.danghoanexpo.mobile",
+    "owner": "danghoanexpo"
   }
 }

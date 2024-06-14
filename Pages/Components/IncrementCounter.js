@@ -18,9 +18,6 @@ export const IncrementCounter = ({
         if (parseInt(newValue) > max) setInput(max.toString());
         else setInput(newValue); // Set to '0' if newValue is empty
     };
-    useEffect(() => {
-        setValue(parseInt(input || "0"));
-    }, [input]);
 
     const handleIncrement = () => {
         var newValue = value + 1;
@@ -50,6 +47,11 @@ export const IncrementCounter = ({
             });
         }
     };
+
+    useEffect(() => {
+        setValue(parseInt(input || "0"));
+    }, [input]);
+
     return (
         <View
             className={`flex-row justify-evenly ${

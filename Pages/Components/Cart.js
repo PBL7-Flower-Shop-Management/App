@@ -15,7 +15,7 @@ import {
 import { CustomText } from "./CustomText";
 import CartItem from "./CartItem";
 import Checkbox from "expo-checkbox";
-import { ShowAlert } from "../../Utils/helper";
+import { isNumberic, ShowAlert } from "../../Utils/helper";
 import Toast from "react-native-toast-message";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
@@ -32,11 +32,16 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
     const [isLoading, SetIsLoading] = useState(false);
 
     const handleChangeAmount = (id, value) => {
+        let item = null;
         var newListCart = listCart.map((i) => {
-            if (i.id === id) i.numberOfFlowers = value;
+            if (i.id === id) {
+                i.numberOfFlowers = value;
+                item = i;
+            }
             return i;
         });
         setListCart(newListCart);
+        handleUpdateCart(item);
     };
 
     const handleCheckAllItems = (isChecked) => {
@@ -49,11 +54,17 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
 
         setListCart(listNewCart);
         setIsCheckAll(isChecked);
+        handleUpdateCart(listNewCart, true);
     };
 
     const handleCheckItem = (item) => {
+        let newItem = null;
         const listNewCart = listCart.map((i) => {
             if (i.id === item.id) {
+                newItem = {
+                    ...i,
+                    selected: !i?.selected,
+                };
                 return {
                     ...i,
                     selected: !i?.selected,
@@ -64,47 +75,110 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
         });
 
         setListCart(listNewCart);
+        handleUpdateCart(newItem);
     };
 
     const handleDeleteItem = (products) => {
         ShowAlert({
             title: "Warning",
-            alertContent: "Are you sure you want to delete this item??",
-            firstBtnName: "Cancel",
-            secondBtnName: "Delete",
-            handleFirstBtn: () => {},
-            handleSecondBtn: () => {
-                const listNewCart = listCart.filter(
-                    (i) => i.id !== products.id
+            alertContent: "Are you sure you want to delete this item?",
+            firstBtnName: "Delete",
+            secondBtnName: "Cancel",
+            handleFirstBtn: async () => {
+                SetIsLoading(true);
+
+                let result = await refreshToken();
+                if (!result.isSuccessfully) {
+                    Toast.show({
+                        type: "error",
+                        text1: result.data,
+                    });
+                    SetIsLoading(false);
+                    return;
+                }
+
+                const response = await FetchApi(
+                    UrlConfig.user.deleteCart.replace("{id}", products.id),
+                    "DELETE",
+                    result.data
                 );
-                setListCart(listNewCart);
+
+                if (response.succeeded) {
+                    Toast.show({
+                        type: "success",
+                        text1: "Delete selected item successfully!",
+                    });
+                    const listNewCart = listCart.filter(
+                        (i) => i.id !== products.id
+                    );
+                    setListCart(listNewCart);
+                } else {
+                    Toast.show({
+                        type: "error",
+                        text1: response.message,
+                    });
+                }
+                SetIsLoading(false);
             },
+            handleSecondBtn: () => {},
         });
     };
 
     const handleDeleteSelectedItem = () => {
         if (selectedCart.length === 0)
             ShowAlert({
-                title: "Thông báo",
-                alertContent: "Không có món hàng nào được chọn!",
-                firstBtnName: "Đóng",
+                title: "Notification",
+                alertContent: "No items selected!",
+                firstBtnName: "Close",
                 handleFirstBtn: () => {},
             });
         else
             ShowAlert({
                 title: "Warning",
                 alertContent:
-                    "Are you sure you want to delete all selected items??",
-                firstBtnName: "Cancel",
-                secondBtnName: "Delete",
-                handleFirstBtn: () => {},
-                handleSecondBtn: () => {
+                    "Are you sure you want to delete all selected items?",
+                firstBtnName: "Delete",
+                secondBtnName: "Cancel",
+                handleFirstBtn: async () => {
+                    SetIsLoading(true);
+
+                    let result = await refreshToken();
+                    if (!result.isSuccessfully) {
+                        Toast.show({
+                            type: "error",
+                            text1: result.data,
+                        });
+                        SetIsLoading(false);
+                        return;
+                    }
+
                     const selectedId = selectedCart.map((sc) => sc.id);
-                    const listNewCart = listCart.filter(
-                        (i) => !selectedId.some((si) => si === i.id)
+
+                    const response = await FetchApi(
+                        UrlConfig.user.deleteCarts,
+                        "DELETE",
+                        result.data,
+                        { flowerIds: selectedId }
                     );
-                    setListCart(listNewCart);
+
+                    if (response.succeeded) {
+                        Toast.show({
+                            type: "success",
+                            text1: "Delete selected item(s) successfully!",
+                        });
+                        const listNewCart = listCart.filter(
+                            (i) => !selectedId.some((si) => si === i.id)
+                        );
+                        setListCart(listNewCart);
+                    } else {
+                        Toast.show({
+                            type: "error",
+                            text1: response.message,
+                        });
+                    }
+                    SetIsLoading(false);
                 },
+                handleSecondBtn: () => {},
             });
     };
 
@@ -155,6 +229,62 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
         }
         SetRefresh(false);
         SetIsLoading(false);
+    };
+
+    const handleUpdateCart = async (item, isCheckAll = false) => {
+        SetIsLoading(true);
+
+        let result = await refreshToken();
+        if (!result.isSuccessfully) {
+            Toast.show({
+                type: "error",
+                text1: result.data,
+            });
+            SetIsLoading(false);
+            return;
+        }
+
+        if (isCheckAll) {
+            for (i of item) {
+                const response = await FetchApi(
+                    UrlConfig.user.updateCart,
+                    "PUT",
+                    result.data,
+                    {
+                        flowerId: i.id,
+                        numberOfFlowers: i.numberOfFlowers,
+                        selected: i.selected,
+                    }
+                );
+
+                if (!response.succeeded)
+                    Toast.show({
+                        type: "error",
+                        text1: response.message,
+                    });
+                SetIsLoading(false);
+            }
+        } else {
+            if (isNumberic(item.numberOfFlowers) && item.numberOfFlowers > 0) {
+                const response = await FetchApi(
+                    UrlConfig.user.updateCart,
+                    "PUT",
+                    result.data,
+                    {
+                        flowerId: item.id,
+                        numberOfFlowers: item.numberOfFlowers,
+                        selected: item.selected,
+                    }
+                );
+
+                if (!response.succeeded)
+                    Toast.show({
+                        type: "error",
+                        text1: response.message,
+                    });
+            }
+            SetIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -251,7 +381,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                         <>
                             {listCart && listCart.length > 0 ? (
                                 <View className="flex-grow justify-between pb-5">
-                                    <View>
+                                    <View className="h-4/6">
                                         <ScrollView
                                             refreshControl={
                                                 <RefreshControl
@@ -267,7 +397,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                         >
                                             {listCart.map((p, id) => (
                                                 <CartItem
-                                                    key={id}
+                                                    key={p.id}
                                                     product={p}
                                                     handleChangeNumber={(
                                                         value
@@ -310,7 +440,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                 <>
                                     <CustomText>
                                         No products have been added to the cart
-                                        yet row!
+                                        yet!
                                     </CustomText>
                                     <Button
                                         title="Reload"

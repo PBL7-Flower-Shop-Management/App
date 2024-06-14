@@ -4,6 +4,7 @@ import { CustomText } from "./CustomText";
 import { IncrementCounter } from "./IncrementCounter";
 import Checkbox from "expo-checkbox";
 import { ShortenString } from "../../Utils/helper";
+import HaveNotAvatar from "../../Public/Images/haveNotAvatar.png";
 
 const CartItem = ({
     product,
@@ -12,6 +13,7 @@ const CartItem = ({
     handleDeleteItem,
 }) => {
     const [value, setValue] = useState(product.numberOfFlowers);
+
     useEffect(() => {
         handleChangeNumber(value);
     }, [value]);
@@ -27,13 +29,18 @@ const CartItem = ({
             </TouchableOpacity>
             <Image
                 className="h-24 w-20 mr-2"
-                source={{
-                    uri: product.image,
-                }}
+                style={{ resizeMode: "contain" }}
+                source={
+                    product.image
+                        ? {
+                              uri: product.image,
+                          }
+                        : HaveNotAvatar
+                }
             />
             <View className="flex-grow justify-between">
                 <CustomText style={{ fontSize: 16 }}>
-                    {ShortenString(product.name, 30)}
+                    {ShortenString(product.name, 22)}
                 </CustomText>
                 <CustomText style={{ color: "black", fontSize: 15 }}>
                     {product.unitPrice}$

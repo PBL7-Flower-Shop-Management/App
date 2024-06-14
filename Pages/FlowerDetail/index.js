@@ -81,30 +81,44 @@ const FlowerDetail = ({ navigation, route }) => {
         if (userInfo) {
             SetIsLoading(true);
 
-            let result = await refreshToken();
-            if (!result.isSuccessfully) {
-                Toast.show({
-                    type: "error",
-                    text1: result.data,
-                });
-                SetIsLoading(false);
-                return;
-            }
-            const response = await FetchApi(
-                UrlConfig.user.createCart,
-                "POST",
-                result.data,
-                { flowerId: flowerId, numberOfFlowers: value }
-            );
+            if (flowerInformation.status === flowerStatus["Available"]) {
+                let result = await refreshToken();
+                if (!result.isSuccessfully) {
+                    Toast.show({
+                        type: "error",
+                        text1: result.data,
+                    });
+                    SetIsLoading(false);
+                    return;
+                }
 
-            if (response.succeeded) {
-                setCartVisible(true);
+                const response = await FetchApi(
+                    UrlConfig.user.createCart,
+                    "POST",
+                    result.data,
+                    {
+                        flowerId: flowerId,
+                        numberOfFlowers: value,
+                    }
+                );
+
+                if (response.succeeded) {
+                    setCartVisible(true);
+                } else {
+                    Toast.show({
+                        type: "error",
+                        text1: response.message,
+                    });
+                }
             } else {
-                Toast.show({
-                    type: "error",
-                    text1: response.message,
+                ShowAlert({
+                    title: "Warning",
+                    alertContent: "This product is out of stock!",
+                    firstBtnName: "Close",
+                    handleFirstBtn: () => {},
                 });
             }
+
             SetIsLoading(false);
         } else {
             ShowAlert({
