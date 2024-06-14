@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import { Rating } from "react-native-ratings";
-import { ConvertToShortSoldQuantity } from "../../Utils/helper.js";
+import { ConvertToShortSoldQuantity, ShowAlert } from "../../Utils/helper.js";
 import {
     flowerStatus,
     flowerStatusColor,
@@ -26,6 +26,8 @@ import { toastConfig } from "../Components/ToastConfig.js";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
 import { CartContext } from "../../Context/CartContext.js";
+import { AuthContext } from "../../Context/AuthContext.js";
+import { PopupContext } from "../../Context/PopupContext.js";
 
 const FlowerDetail = ({ navigation, route }) => {
     const [value, setValue] = useState(1);
@@ -35,6 +37,8 @@ const FlowerDetail = ({ navigation, route }) => {
     const [isLoading, SetIsLoading] = useState(false);
     const [refresh, SetRefresh] = useState(false);
     const { setCartVisible } = useContext(CartContext);
+    const { refreshToken, userInfo } = useContext(AuthContext);
+    const { setVisible } = useContext(PopupContext);
 
     const getFlowerDetail = async (flowerId) => {
         const response = await FetchApi(
@@ -65,9 +69,53 @@ const FlowerDetail = ({ navigation, route }) => {
         if (response.succeeded) {
             setReviews(response.data);
         } else {
-            Toast.show({
-                type: "error",
-                text1: response.message,
+            console.log(response.message);
+            // Toast.show({
+            //     type: "error",
+            //     text1: response.message,
+            // });
+        }
+    };
+
+    const handleAddToCart = async () => {
+        if (userInfo) {
+            SetIsLoading(true);
+
+            let result = await refreshToken();
+            if (!result.isSuccessfully) {
+                Toast.show({
+                    type: "error",
+                    text1: result.data,
+                });
+                SetIsLoading(false);
+                return;
+            }
+            const response = await FetchApi(
+                UrlConfig.user.createCart,
+                "POST",
+                result.data,
+                { flowerId: flowerId, numberOfFlowers: value }
+            );
+
+            if (response.succeeded) {
+                setCartVisible(true);
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: response.message,
+                });
+            }
+            SetIsLoading(false);
+        } else {
+            ShowAlert({
+                title: "Warning",
+                alertContent: "Login to manage your cart!",
+                firstBtnName: "Login",
+                secondBtnName: "Close",
+                handleFirstBtn: () => {
+                    setVisible(true);
+                },
+                handleSecondBtn: () => {},
             });
         }
     };
@@ -245,7 +293,9 @@ const FlowerDetail = ({ navigation, route }) => {
                         <View className="flex-row justify-evenly p-1 px-2">
                             <TouchableOpacity
                                 className="bg-white border-blue-500 border p-2 px-8 rounded-md"
-                                onPress={() => setCartVisible(true)}
+                                onPress={async () => {
+                                    await handleAddToCart();
+                                }}
                             >
                                 <CustomText className="text-blue-500">
                                     Add to cart

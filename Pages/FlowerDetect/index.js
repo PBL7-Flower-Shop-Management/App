@@ -4,10 +4,12 @@ import { useCallback } from "react";
 import TakeImage from "./TakeImage";
 import FlowerDetect from "./FlowerDetect";
 import SuccessDetect from "./SuccessDetect";
+import Search from "../Search/index";
+import FlowerDetail from "../FlowerDetail/index";
 
 const tab = createNativeStackNavigator();
 
-function FlowerDetectTab({ navigation, SetIsNavBarShow }) {
+function FlowerDetectTab({ SetIsNavBarShow }) {
     useFocusEffect(
         useCallback(() => {
             SetIsNavBarShow(false);
@@ -23,6 +25,8 @@ function FlowerDetectTab({ navigation, SetIsNavBarShow }) {
             <tab.Screen name="TakeImage" component={TakeImage} />
             <tab.Screen name="FlowerDetect" component={FlowerDetect} />
             <tab.Screen name="SuccessDetect" component={SuccessDetect} />
+            <tab.Screen name="Search" component={Search} />
+            <tab.Screen name="FlowerDetail" component={FlowerDetail} />
         </tab.Navigator>
     );
 }

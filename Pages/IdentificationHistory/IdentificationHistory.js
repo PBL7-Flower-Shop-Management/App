@@ -16,7 +16,7 @@ import { toastConfig } from "../Components/ToastConfig.js";
 import { AuthContext } from "../../Context/AuthContext.js";
 import { PopupContext } from "../../Context/PopupContext.js";
 
-function IdentificationHistory() {
+function IdentificationHistory({ navigation }) {
     const [identificationHistories, setIdentificationHistories] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [isLoading, SetIsLoading] = useState(false);
@@ -94,7 +94,11 @@ function IdentificationHistory() {
                     identificationHistories.length > 0 ? (
                         <View className="pt-2 px-2">
                             {identificationHistories.map((ih, id) => (
-                                <Result key={id} data={ih} />
+                                <Result
+                                    key={id}
+                                    data={ih}
+                                    navigation={navigation}
+                                />
                             ))}
                             <View className="mb-52"></View>
                         </View>

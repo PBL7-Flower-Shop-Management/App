@@ -7,6 +7,7 @@ import OrderDetail from "../OrderDetail";
 import FlowerDetail from "../FlowerDetail";
 import ChangePassword from "../ChangePassword";
 import Login from "../Login";
+import Search from "../Search";
 const tab = createNativeStackNavigator();
 
 function AccountTab() {
@@ -18,7 +19,7 @@ function AccountTab() {
             <tab.Screen name="Order" component={Order} />
             <tab.Screen name="OrderDetail" component={OrderDetail} />
             <tab.Screen name="FlowerDetail" component={FlowerDetail} />
-            <tab.Screen name="ChangePassword" component={ChangePassword} />
+            <tab.Screen name="Search" component={Search} />
         </tab.Navigator>
     );
 }

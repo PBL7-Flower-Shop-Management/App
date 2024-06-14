@@ -78,26 +78,24 @@ function Category({ navigation }) {
             )}
             <View className="opacity-100 flex-row bg-blue-400 h-20 items-end pl-4 pb-1">
                 <Pressable
-                    onPress={() => inputRef.current.focus()}
+                    onPress={() => navigation.navigate("Search")}
                     className="flex-row flex-grow w-4/5 bg-white text-black rounded-md items-center pl-2 py-1 border border-gray-400"
                 >
                     <Image
                         className="w-5 h-5 mr-2"
                         source={require("../../Public/Images/search.png")}
                     />
-                    <TextInput
-                        ref={inputRef}
-                        placeholder="Search"
-                        placeholderTextColor="gray"
-                        value={txtSearch}
-                        onChangeText={SetTxtSearch}
-                        className="w-4/5 text-#5C5D60 opacity-100 border-#c9c3c3"
-                        style={{
-                            fontSize: textInputDefaultSize * scale,
-                        }}
-                    ></TextInput>
+                    <View className="w-4/5 text-#5C5D60 opacity-100 border-#c9c3c3">
+                        <CustomText
+                            style={{
+                                fontSize: textInputDefaultSize * scale,
+                            }}
+                        >
+                            Search
+                        </CustomText>
+                    </View>
                     <TouchableOpacity
-                        className="p-1 flex-row flex-end"
+                        className=" p-1 flex-row flex-end"
                         // onPress={() => setCartVisible(true)}
                     >
                         <Image

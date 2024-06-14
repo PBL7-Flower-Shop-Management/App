@@ -4,7 +4,7 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { CustomText } from "./CustomText";
 import { FormatDate } from "../../Utils/helper";
 
-export const Result = ({ data, showHideOption = true }) => {
+export const Result = ({ data, showHideOption = true, navigation }) => {
     const [isModalVisible, SetIsModalVisible] = useState(false);
     const [currentImage, setCurrentImage] = useState();
     const [showAnotherResult, setShowAnotherResult] = useState(false);
@@ -23,7 +23,9 @@ export const Result = ({ data, showHideOption = true }) => {
                     <TouchableOpacity
                         className="-mb-0.5"
                         onPress={() => {
-                            console.log("Search similar products");
+                            navigation.navigate("Search", {
+                                txtSearch: data.results[0].vietnamese_label,
+                            });
                         }}
                     >
                         <CustomText className="text-blue-400 underline">

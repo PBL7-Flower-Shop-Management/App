@@ -8,6 +8,7 @@ import {
     TextInput,
     ScrollView,
     ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import {
@@ -26,11 +27,12 @@ const Order = ({ navigation, route }) => {
     const inputRef = useRef(null);
     const scrollRef = useRef(null);
     const [txtSearch, SetTxtSearch] = useState(null);
-    const [index, setIndex] = useState(route.params.orderType);
+    const [index, setIndex] = useState();
     const [cords, setCords] = useState([]);
     const [orders, setOrders] = useState([]);
     const [tmpOrders, setTmpOrders] = useState([]);
     const [isLoading, SetIsLoading] = useState(false);
+    const [refresh, SetRefresh] = useState(false);
     const { refreshToken } = useContext(AuthContext);
 
     const getOrders = async () => {
@@ -59,6 +61,7 @@ const Order = ({ navigation, route }) => {
             });
         }
         SetIsLoading(false);
+        SetRefresh(false);
     };
 
     useEffect(() => {
@@ -72,19 +75,33 @@ const Order = ({ navigation, route }) => {
     }, [route.params, scrollRef, cords]);
 
     useEffect(() => {
-        setTmpOrders(
-            orders.filter(
-                (o) =>
-                    index === 1 ||
-                    o.status === Object.keys(orderStatus)[index - 2]
-            )
-        );
-    }, [index]);
+        if (index) {
+            setTmpOrders(
+                orders.filter(
+                    (o) =>
+                        index === 1 ||
+                        o.status === Object.keys(orderStatus)[index - 2]
+                )
+            );
+        }
+    }, [index, orders]);
+
+    useEffect(() => {
+        if (route.params?.orderType) {
+            setIndex(route.params?.orderType);
+        }
+    }, [route.params]);
 
     useEffect(() => {
         SetIsLoading(true);
         getOrders();
     }, []);
+
+    useEffect(() => {
+        if (refresh) {
+            getOrders();
+        }
+    }, [refresh]);
 
     return (
         <View className="flex-1 bg-gray-100">
@@ -95,7 +112,7 @@ const Order = ({ navigation, route }) => {
                 backgroundColor="transparent"
             />
             {isLoading && (
-                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+                <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center z-10">
                     <ActivityIndicator size="large" color="green" />
                 </View>
             )}
@@ -116,7 +133,7 @@ const Order = ({ navigation, route }) => {
                     </CustomText>
                 </View>
             </View>
-            <View className="items-center p-3 opacity-100 flex-row bg-white">
+            {/* <View className="items-center p-3 opacity-100 flex-row bg-white">
                 <Pressable
                     onPress={() => inputRef.current.focus()}
                     className="flex-row bg-DFE0E2 text-black rounded-md items-center pl-2 py-1 border border-gray-400"
@@ -146,13 +163,20 @@ const Order = ({ navigation, route }) => {
                         />
                     </TouchableOpacity>
                 </Pressable>
-            </View>
+            </View> */}
             <View className="-mx-10 h-1 bg-gray-100"></View>
             <View>
                 <ScrollView
                     ref={scrollRef}
                     horizontal={true}
                     className="bg-white"
+                    refreshControl={
+                        <RefreshControl
+                            style={{ tintColor: "green" }}
+                            refreshing={refresh}
+                            onRefresh={() => SetRefresh(true)}
+                        />
+                    }
                 >
                     <TouchableOpacity
                         className={`p-4 ${
@@ -202,7 +226,16 @@ const Order = ({ navigation, route }) => {
                     ))}
                 </ScrollView>
             </View>
-            <ScrollView className="flex-grow">
+            <ScrollView
+                className="flex-grow"
+                refreshControl={
+                    <RefreshControl
+                        style={{ tintColor: "green" }}
+                        refreshing={refresh}
+                        onRefresh={() => SetRefresh(true)}
+                    />
+                }
+            >
                 {tmpOrders && tmpOrders.length > 0 ? (
                     <View>
                         {tmpOrders.map((o, id) => (

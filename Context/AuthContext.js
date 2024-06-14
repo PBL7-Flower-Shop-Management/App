@@ -1,7 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
 import { addMinutes, isAfter } from "date-fns";
-import axios from "axios";
-import { API_URL } from "../Utils/constants.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FetchApi } from "../Utils/FetchApi.js";
 import UrlConfig from "../Config/UrlConfig.js";

@@ -1,16 +1,10 @@
 import React from "react";
-import {
-    View,
-    Image,
-    TouchableOpacity,
-    ScrollView,
-    Linking,
-} from "react-native";
+import { View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { CustomText } from "./CustomText";
 import { AirbnbRating } from "react-native-ratings";
 import { ShortenString } from "../../Utils/helper";
 
-const FeedbackList = ({ title, feedbacks }) => {
+const FeedbackList = ({ title, feedbacks, navigation }) => {
     return (
         <View>
             <View className="flex flex-row justify-between">
@@ -23,7 +17,7 @@ const FeedbackList = ({ title, feedbacks }) => {
                     style={{
                         color: "#53B6ED",
                     }}
-                    onPress={() => Linking.openURL("https://www.facebook.com/")}
+                    onPress={() => navigation.navigate("Feedback")}
                 >
                     View all
                 </CustomText>
@@ -35,7 +29,9 @@ const FeedbackList = ({ title, feedbacks }) => {
                         className="flex-1 w-36 gap-y-1 bg-white border border-gray-400 rounded-lg mr-2 mt-2 p-1"
                         key={id}
                         onPress={() =>
-                            Linking.openURL("https://www.facebook.com/")
+                            navigation.navigate("FlowerDetail", {
+                                _id: feedback.flowerId,
+                            })
                         }
                     >
                         <View className="flex-row w-28">
@@ -56,6 +52,7 @@ const FeedbackList = ({ title, feedbacks }) => {
                             starStyle={{
                                 marginHorizontal: 1,
                             }}
+                            isDisabled={true}
                         />
                         <CustomText>
                             {ShortenString(feedback.content, 45)}

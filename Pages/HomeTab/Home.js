@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
-    TextInput,
     View,
     StatusBar,
     TouchableOpacity,
@@ -21,9 +20,7 @@ import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
 import { CartContext } from "../../Context/CartContext.js";
 
-const Home = ({ navigation, route }) => {
-    const [txtSearch, SetTxtSearch] = useState(null);
-    const inputRef = useRef(null);
+const Home = ({ navigation }) => {
     const [flowerBestSeller, setFlowerBestSeller] = useState([]);
     const [decorativeFlowers, setDecorativeFlowers] = useState([]);
     const [flowersAsGifts, setFlowersAsGifts] = useState([]);
@@ -35,7 +32,7 @@ const Home = ({ navigation, route }) => {
 
     const getFLowerBestSeller = async () => {
         const response = await FetchApi(
-            UrlConfig.flower.getBestSeller,
+            UrlConfig.flower.getBestSeller + "?limit=10",
             "GET",
             null
         );
@@ -52,7 +49,7 @@ const Home = ({ navigation, route }) => {
 
     const getDecorativeFlowers = async () => {
         const response = await FetchApi(
-            UrlConfig.flower.getDecoration,
+            UrlConfig.flower.getDecoration + "?limit=10",
             "GET",
             null
         );
@@ -68,7 +65,11 @@ const Home = ({ navigation, route }) => {
     };
 
     const getFlowerAsGift = async () => {
-        const response = await FetchApi(UrlConfig.flower.getGift, "GET", null);
+        const response = await FetchApi(
+            UrlConfig.flower.getGift + "?limit=10",
+            "GET",
+            null
+        );
 
         if (response.succeeded) {
             setFlowersAsGifts(response.data);
@@ -84,7 +85,7 @@ const Home = ({ navigation, route }) => {
 
     const getFeedbackList = async () => {
         const response = await FetchApi(
-            UrlConfig.feedback.getRecentlyAll,
+            UrlConfig.feedback.getRecentlyAll + "?limit=10",
             "GET",
             null
         );
@@ -159,24 +160,22 @@ const Home = ({ navigation, route }) => {
                     </CustomText>
                     <View className="opacity-100 flex-row bg-white mt-1 pl-2">
                         <Pressable
-                            onPress={() => inputRef.current.focus()}
+                            onPress={() => navigation.navigate("Search")}
                             className="flex-row flex-grow w-4/5 bg-DFE0E2 text-black rounded-md items-center pl-2 py-1 border border-gray-400"
                         >
                             <Image
                                 className="w-5 h-5 mr-2"
                                 source={require("../../Public/Images/search.png")}
                             />
-                            <TextInput
-                                ref={inputRef}
-                                placeholder="Search"
-                                placeholderTextColor="gray"
-                                value={txtSearch}
-                                onChangeText={SetTxtSearch}
-                                className="w-4/5 text-#5C5D60 opacity-100 border-#c9c3c3"
-                                style={{
-                                    fontSize: textInputDefaultSize * scale,
-                                }}
-                            ></TextInput>
+                            <View className="w-4/5 text-#5C5D60 opacity-100 border-#c9c3c3">
+                                <CustomText
+                                    style={{
+                                        fontSize: textInputDefaultSize * scale,
+                                    }}
+                                >
+                                    Search
+                                </CustomText>
+                            </View>
                             <TouchableOpacity
                                 className="p-1 flex-row flex-end"
                                 // onPress={() => setCartVisible(true)}
@@ -215,6 +214,7 @@ const Home = ({ navigation, route }) => {
                         title={"Best seller"}
                         products={flowerBestSeller}
                         navigation={navigation}
+                        url={UrlConfig.flower.getBestSeller}
                     />
                 </View>
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
@@ -223,6 +223,7 @@ const Home = ({ navigation, route }) => {
                         title={"Home decoration"}
                         products={decorativeFlowers}
                         navigation={navigation}
+                        url={UrlConfig.flower.getDecoration}
                     />
                 </View>
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
@@ -231,13 +232,15 @@ const Home = ({ navigation, route }) => {
                         title={"For the gift"}
                         products={flowersAsGifts}
                         navigation={navigation}
+                        url={UrlConfig.flower.getGift}
                     />
                 </View>
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
                 <View className="mt-5">
                     <FeedbackList
-                        title={"Positive feedback"}
+                        title={"Recent feedback"}
                         feedbacks={feedbackList}
+                        navigation={navigation}
                     />
                 </View>
                 <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>

@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-    View,
-    Image,
-    TouchableOpacity,
-    ScrollView,
-    Linking,
-} from "react-native";
+import React from "react";
+import { View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { CustomText } from "./CustomText";
 import { Rating } from "react-native-ratings";
 import {
@@ -15,7 +9,7 @@ import {
 } from "../../Utils/constants";
 import { ShortenString } from "../../Utils/helper";
 
-const ProductList = ({ title, products, navigation }) => {
+const ProductList = ({ title, products, navigation, url }) => {
     return (
         <View>
             {title && (
@@ -32,9 +26,12 @@ const ProductList = ({ title, products, navigation }) => {
                         style={{
                             color: "#53B6ED",
                         }}
-                        onPress={() =>
-                            Linking.openURL("https://www.facebook.com/")
-                        }
+                        onPress={() => {
+                            navigation.navigate("Search", {
+                                url: url,
+                                title: title,
+                            });
+                        }}
                     >
                         View all
                     </CustomText>

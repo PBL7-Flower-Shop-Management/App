@@ -83,10 +83,11 @@ const Account = ({ navigation, route }) => {
         if (response.succeeded) {
             setFavoriteFlowers(response.data);
         } else {
-            Toast.show({
-                type: "error",
-                text1: response.message,
-            });
+            console.log(response.message);
+            // Toast.show({
+            //     type: "error",
+            //     text1: response.message,
+            // });
         }
         SetIsLoading(false);
     };
@@ -350,7 +351,14 @@ const Account = ({ navigation, route }) => {
                         </ScrollView>
                     </Pressable>
                     <View className="mt-5 -mx-10 h-2 bg-gray-100"></View>
-                    <Pressable onPress={() => console.log("click my order")}>
+                    <Pressable
+                        onPress={() => {
+                            navigation.navigate("Search", {
+                                title: "Favourite flower",
+                                flowerList: favoriteFlowers,
+                            });
+                        }}
+                    >
                         <View className="flex-row justify-between mt-3">
                             <CustomText
                                 style={{

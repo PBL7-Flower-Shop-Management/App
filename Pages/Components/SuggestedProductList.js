@@ -62,7 +62,9 @@ const SuggestedProductList = ({
                                         navigation.navigate(
                                             "FlowerDetail",
                                             (params = {
-                                                _id: product._id,
+                                                _id: product._id
+                                                    ? product._id
+                                                    : product.flowerId,
                                             })
                                         )
                                     }
@@ -162,7 +164,10 @@ const SuggestedProductList = ({
                                             navigation.navigate(
                                                 "FlowerDetail",
                                                 (params = {
-                                                    _id: products[id + 1]._id,
+                                                    _id: products[id + 1]._id
+                                                        ? products[id + 1]._id
+                                                        : products[id + 1]
+                                                              .flowerId,
                                                 })
                                             )
                                         }

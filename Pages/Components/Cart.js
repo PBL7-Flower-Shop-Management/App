@@ -10,6 +10,7 @@ import {
     Image,
     ActivityIndicator,
     Button,
+    RefreshControl,
 } from "react-native";
 import { CustomText } from "./CustomText";
 import CartItem from "./CartItem";
@@ -27,6 +28,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
     const [selectedCart, setSelectedCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [isCheckAll, setIsCheckAll] = useState(false);
+    const [refresh, SetRefresh] = useState(false);
     const [isLoading, SetIsLoading] = useState(false);
 
     const handleChangeAmount = (id, value) => {
@@ -126,8 +128,8 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
     };
 
     const getCarts = async () => {
-        SetIsLoading(true);
         let result = await refreshToken();
+        SetIsLoading(!refresh);
         if (!result.isSuccessfully) {
             Toast.show({
                 type: "error",
@@ -151,6 +153,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                 text1: response.message,
             });
         }
+        SetRefresh(false);
         SetIsLoading(false);
     };
 
@@ -168,7 +171,11 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
 
     useEffect(() => {
         if (userInfo) getCarts();
-    }, []);
+    }, [visible]);
+
+    useEffect(() => {
+        if (refresh) getCarts();
+    }, [refresh]);
 
     return (
         <Modal visible={visible} animationType="slide">
@@ -245,7 +252,19 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                             {listCart && listCart.length > 0 ? (
                                 <View className="flex-grow justify-between pb-5">
                                     <View>
-                                        <ScrollView>
+                                        <ScrollView
+                                            refreshControl={
+                                                <RefreshControl
+                                                    style={{
+                                                        tintColor: "green",
+                                                    }}
+                                                    refreshing={refresh}
+                                                    onRefresh={() =>
+                                                        SetRefresh(true)
+                                                    }
+                                                />
+                                            }
+                                        >
                                             {listCart.map((p, id) => (
                                                 <CartItem
                                                     key={id}
@@ -294,7 +313,7 @@ const Cart = ({ visible, closeModal, onNavigateToLogin }) => {
                                         yet row!
                                     </CustomText>
                                     <Button
-                                        title="reload"
+                                        title="Reload"
                                         onPress={() => getCarts()}
                                     />
                                 </>
