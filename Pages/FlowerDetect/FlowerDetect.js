@@ -9,6 +9,7 @@ import styles from "./style.js";
 import ScanAnimation from "../Components/ScanAnimation.js";
 import { FetchApi } from "../../Utils/FetchApi.js";
 import UrlConfig from "../../Config/UrlConfig.js";
+import { CLOUDINARY_CLOUD_NAME, UPLOAD_PRESET } from "../../Utils/constants.js";
 
 const FlowerDetect = ({ navigation, route }) => {
     const { refreshToken, userInfo } = useContext(AuthContext);
@@ -39,6 +40,42 @@ const FlowerDetect = ({ navigation, route }) => {
         );
     };
 
+    const uploadImage = async (image) => {
+        if (!image) return;
+
+        const data = new FormData();
+        data.append("file", image);
+        data.append("upload_preset", UPLOAD_PRESET);
+        data.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+        try {
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    // headers: {
+                    //     "Content-Type": "multipart/form-data",
+                    // },
+                    body: data,
+                }
+            );
+            const result = await res.json();
+
+            if (res.ok) return result;
+            else {
+                Toast.show({
+                    type: "error",
+                    text1: result.error.message,
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: error.message ?? error,
+            });
+        }
+    };
+
     const detectImage = async () => {
         SetIsLoading(true);
         SetIsShowAnimated(true);
@@ -58,15 +95,14 @@ const FlowerDetect = ({ navigation, route }) => {
                 return;
             } else token = result.data;
         }
-        const formData = new FormData();
-        formData.append("flowerImage", image);
+
+        const uploadedImage = await uploadImage(image);
 
         const response = await FetchApi(
             UrlConfig.identification.classifyFlower,
             "POST",
             token,
-            formData,
-            true
+            uploadedImage
         );
 
         if (response.succeeded) {

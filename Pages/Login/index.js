@@ -68,6 +68,12 @@ const Login = ({ navigation, route }) => {
     }, [route?.params]);
 
     useEffect(() => {
+        if (googleMessage !== "") {
+            Toast.show({
+                type: "error",
+                text1: googleMessage,
+            });
+        }
         SetMessage(googleMessage);
     }, [googleMessage]);
 
@@ -197,14 +203,18 @@ const Login = ({ navigation, route }) => {
                     <View style={{ gap: 14 }}>
                         <TouchableOpacity
                             onPress={async () => {
-                                if (checkLogic())
-                                    SetMessage(
-                                        await login(
-                                            username,
-                                            password,
-                                            isRememberLogin
-                                        )
+                                if (checkLogic()) {
+                                    const msg = await login(
+                                        username,
+                                        password,
+                                        isRememberLogin
                                     );
+                                    if (msg !== "")
+                                        Toast.show({
+                                            type: "error",
+                                            text1: msg,
+                                        });
+                                }
                             }}
                             style={styles.btnLogin}
                         >

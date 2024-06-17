@@ -20,6 +20,7 @@ function AccountTab() {
             <tab.Screen name="OrderDetail" component={OrderDetail} />
             <tab.Screen name="FlowerDetail" component={FlowerDetail} />
             <tab.Screen name="Search" component={Search} />
+            <tab.Screen name="ChangePassword" component={ChangePassword} />
         </tab.Navigator>
     );
 }
