@@ -12,8 +12,10 @@ import {
 import ImageViewer from "react-native-image-zoom-viewer";
 import { CustomText } from "../Components/CustomText.js";
 import {
+    CLOUDINARY_CLOUD_NAME,
     orderStatus,
     orderStatusIcon,
+    UPLOAD_PRESET,
     userRole,
 } from "../../Utils/constants.js";
 import ProductList from "../Components/ProductList.js";
@@ -25,7 +27,6 @@ import { AuthContext } from "../../Context/AuthContext.js";
 import { CartContext } from "../../Context/CartContext.js";
 import { PopupContext } from "../../Context/PopupContext.js";
 import * as ImagePicker from "expo-image-picker";
-import { appendJsonToFormData } from "../../Utils/helper.js";
 
 const Account = ({ navigation, route }) => {
     const [isModalVisible, SetIsModalVisible] = useState(false);
@@ -104,6 +105,42 @@ const Account = ({ navigation, route }) => {
         }
     };
 
+    const uploadImage = async (image) => {
+        if (!image) return;
+
+        const data = new FormData();
+        data.append("file", image);
+        data.append("upload_preset", UPLOAD_PRESET);
+        data.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+        try {
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    // headers: {
+                    //     "Content-Type": "multipart/form-data",
+                    // },
+                    body: data,
+                }
+            );
+            const result = await res.json();
+
+            if (res.ok) return result;
+            else {
+                Toast.show({
+                    type: "error",
+                    text1: result.error.message,
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: error.message ?? error,
+            });
+        }
+    };
+
     const updateAvatar = async (uri) => {
         SetIsLoading(true);
         let result = await refreshToken();
@@ -116,23 +153,23 @@ const Account = ({ navigation, route }) => {
             return;
         }
 
-        const formData = new FormData();
         const image = {
             uri: uri,
             type: "image/jpeg",
             name: "photo.jpg",
         };
-        formData.append("avatar", image);
+        const uploadedImage = await uploadImage(image);
 
         const response = await FetchApi(
             UrlConfig.user.updateProfile,
             "PUT",
             result.data,
-            appendJsonToFormData(formData, {
+            {
+                avatarId: uploadedImage.public_id,
+                avatarUrl: uploadedImage.url,
                 name: userInformation.name,
                 email: userInformation.email,
-            }),
-            true
+            }
         );
         if (response.succeeded) {
             SetUserInfo({ ...userInfo, avatarUrl: response.data.avatarUrl });
