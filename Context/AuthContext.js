@@ -106,6 +106,7 @@ export const AuthProvider = ({ children }) => {
                 const username = response.data.user.username;
                 SetUserInfo(userInfo);
                 SetUsername(username);
+                console.log(isRememberLogin);
                 AsyncStorage.setItem(
                     "isRememberLogin",
                     isRememberLogin.toString()
@@ -183,6 +184,7 @@ export const AuthProvider = ({ children }) => {
     const isLoggedIn = async () => {
         try {
             let isRememberLogin = await AsyncStorage.getItem("isRememberLogin");
+            console.log("remember", isRememberLogin);
             if (
                 isRememberLogin == null ||
                 isRememberLogin.toLowerCase() == "false"
@@ -195,9 +197,11 @@ export const AuthProvider = ({ children }) => {
             if (username) {
                 SetUsername(username);
             }
+            console.log("username", username);
 
             let userInfo = await AsyncStorage.getItem("userInfo");
 
+            console.log("userInfo", userInfo);
             SetIsFirst(false);
 
             if (userInfo == null) {

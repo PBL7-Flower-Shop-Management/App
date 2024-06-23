@@ -168,7 +168,11 @@ const Profile = ({ navigation }) => {
             }
         );
         if (response.succeeded) {
-            SetUserInfo({ ...userInfo, avatarUrl: response.data.avatarUrl });
+            SetUserInfo({
+                ...userInfo,
+                avatarUrl: response.data.avatarUrl,
+                avatarId: response.data.avatarId,
+            });
             Toast.show({
                 type: "success",
                 text1: "Update avatar successfully!",
@@ -182,6 +186,7 @@ const Profile = ({ navigation }) => {
     };
 
     const handleSubmit = async (value) => {
+        if (value === userInformation[key]) return;
         SetIsLoading(true);
         let result = await refreshToken();
         if (!result.isSuccessfully) {
@@ -203,6 +208,7 @@ const Profile = ({ navigation }) => {
                 email: userInfo.email,
                 phoneNumber: userInfo.phoneNumber,
                 avatarUrl: userInfo.avatarUrl,
+                avatarId: userInfo.avatarId,
                 [key]: value,
             }
         );
@@ -275,7 +281,13 @@ const Profile = ({ navigation }) => {
 
                 <View className="absolute self-center -bottom-20">
                     <TouchableOpacity
-                        className="border border-gray-300 rounded-full p-1"
+                        // className="border border-gray-300 rounded-full p-1"
+                        style={{
+                            borderWidth: 1,
+                            borderColor: "#D1D5DB",
+                            borderRadius: 100,
+                            padding: 5,
+                        }}
                         onPress={() => SetIsModalVisible(true)}
                     >
                         <Image

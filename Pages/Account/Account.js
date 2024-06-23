@@ -172,7 +172,11 @@ const Account = ({ navigation, route }) => {
             }
         );
         if (response.succeeded) {
-            SetUserInfo({ ...userInfo, avatarUrl: response.data.avatarUrl });
+            SetUserInfo({
+                ...userInfo,
+                avatarUrl: response.data.avatarUrl,
+                avatarId: response.data.avatarId,
+            });
             Toast.show({
                 type: "success",
                 text1: "Update avatar successfully!",
@@ -251,7 +255,13 @@ const Account = ({ navigation, route }) => {
                     <View className="flex-row mt-4">
                         <View className="relative">
                             <TouchableOpacity
-                                className="border border-gray-300 rounded-full p-1"
+                                // className="border border-gray-300 rounded-full p-1"
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: "#D1D5DB",
+                                    borderRadius: 100,
+                                    padding: 2,
+                                }}
                                 onPress={() => SetIsModalVisible(true)}
                             >
                                 <Image

@@ -5,6 +5,7 @@ import {
     Image,
     TouchableOpacity,
     Dimensions,
+    Platform,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -108,7 +109,7 @@ const BottomTab = ({ navigation }) => {
                             backgroundColor: "white",
                             borderTopLeftRadius: 10,
                             borderTopRightRadius: 10,
-                            height: 96,
+                            height: Platform.OS === "ios" ? 96 : 65,
                             ...styles.shadow,
                         },
                     }}

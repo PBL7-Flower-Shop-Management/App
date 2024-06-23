@@ -1,7 +1,7 @@
 import { Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
 
-// export const API_URL = "http://192.168.1.17:3000"; //local host server
+// export const API_URL = "http://192.168.1.182:3000"; //local host server
 export const API_URL = "https://flower-shop-management-web-server.vercel.app"; //deploy server
 
 export const CLOUDINARY_CLOUD_NAME = "dh4qvjdoq";

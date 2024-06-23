@@ -6,6 +6,7 @@ import {
     StatusBar,
     Modal,
     TouchableWithoutFeedback,
+    ActivityIndicator,
 } from "react-native";
 import { CustomText } from "../Components/CustomText";
 import styles from "./styles.js";
@@ -15,7 +16,7 @@ import { PopupContext } from "../../Context/PopupContext.js";
 
 function Setting({ navigation }) {
     const [isWarningShow, SetIsWarningShow] = useState(false);
-    const { userInfo, logout } = useContext(AuthContext);
+    const { userInfo, logout, isLoading } = useContext(AuthContext);
     const { setVisible } = useContext(PopupContext);
 
     useEffect(() => {
@@ -30,6 +31,11 @@ function Setting({ navigation }) {
                 translucent
                 backgroundColor="transparent"
             />
+            {isLoading && (
+                <View style={styles.waitingCircle}>
+                    <ActivityIndicator size="large" color="green" />
+                </View>
+            )}
             <View className="flex-row items-center h-10 mt-10">
                 <TouchableOpacity
                     className="absolute z-10 p-4"

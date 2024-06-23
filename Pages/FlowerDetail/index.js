@@ -175,28 +175,16 @@ const FlowerDetail = ({ navigation, route }) => {
                         source={require("../../Public/Images/leftArrow.png")}
                     />
                 </TouchableOpacity>
-                <View className="flex-row gap-x-1 bg-transparent">
-                    <TouchableOpacity
-                        className="p-2 bg-gray-400 rounded-full"
-                        onPress={() => setCartVisible(true)}
-                    >
-                        <Image
-                            className="h-5 w-5"
-                            style={{ tintColor: "white" }}
-                            source={require("../../Public/Images/shopping-cart.png")}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        className="p-2 bg-gray-400 rounded-full"
-                        // onPress={() => setCartVisible(true)}
-                    >
-                        <Image
-                            className="h-5 w-5"
-                            style={{ tintColor: "white" }}
-                            source={require("../../Public/Images/more.png")}
-                        />
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    className="p-2 bg-gray-400 rounded-full"
+                    onPress={() => setCartVisible(true)}
+                >
+                    <Image
+                        className="h-5 w-5"
+                        style={{ tintColor: "white" }}
+                        source={require("../../Public/Images/shopping-cart.png")}
+                    />
+                </TouchableOpacity>
             </View>
             <ScrollView
                 refreshControl={

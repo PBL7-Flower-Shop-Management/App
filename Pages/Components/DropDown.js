@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
 import { CustomText } from "./CustomText.js";

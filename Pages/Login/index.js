@@ -7,6 +7,7 @@ import {
     Image,
     Pressable,
     StatusBar,
+    Platform,
     useWindowDimensions,
 } from "react-native";
 import Checkbox from "expo-checkbox";
@@ -70,7 +71,7 @@ const Login = ({ navigation, route }) => {
     useEffect(() => {
         if (googleMessage !== "") {
             Toast.show({
-                type: "error",
+                type: googleMessage.includes("success") ? "success" : "error",
                 text1: googleMessage,
             });
         }
@@ -193,8 +194,8 @@ const Login = ({ navigation, route }) => {
                         <Checkbox
                             value={isRememberLogin}
                             onValueChange={SetRememberLogin}
+                            color={isRememberLogin ? "#60A5FA" : "#DFE0E2"}
                             style={{
-                                borderColor: "#DFE0E2",
                                 borderRadius: 3,
                             }}
                         />
@@ -211,7 +212,9 @@ const Login = ({ navigation, route }) => {
                                     );
                                     if (msg !== "")
                                         Toast.show({
-                                            type: "error",
+                                            type: msg.includes("success")
+                                                ? "success"
+                                                : "error",
                                             text1: msg,
                                         });
                                 }
@@ -222,21 +225,23 @@ const Login = ({ navigation, route }) => {
                                 Login
                             </CustomText>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            disabled={!request}
-                            onPress={async () => {
-                                await googleLogin();
-                            }}
-                            style={styles.btnLoginWithGoogle}
-                        >
-                            <Image
-                                className="w-5 h-5"
-                                source={require("../../Public/Images/google.png")}
-                            />
-                            <CustomText style={styles.txtLoginWithGoogle}>
-                                Login with google
-                            </CustomText>
-                        </TouchableOpacity>
+                        {Platform.OS === "ios" && (
+                            <TouchableOpacity
+                                disabled={!request}
+                                onPress={async () => {
+                                    await googleLogin();
+                                }}
+                                style={styles.btnLoginWithGoogle}
+                            >
+                                <Image
+                                    className="w-5 h-5"
+                                    source={require("../../Public/Images/google.png")}
+                                />
+                                <CustomText style={styles.txtLoginWithGoogle}>
+                                    Login with google
+                                </CustomText>
+                            </TouchableOpacity>
+                        )}
                         <CustomText
                             style={{
                                 color: "#53B6ED",

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Camera, CameraType, FlashMode } from "expo-camera/legacy";
 import { PinchGestureHandler, State } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/native";
 import { CustomText } from "../Components/CustomText.js";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
@@ -35,6 +36,7 @@ const reducer = (state = initialState, action) => {
 };
 
 const TakeImage = ({ navigation, route }) => {
+    const isFocused = useIsFocused();
     const cameraRef = useRef();
     const [hasCameraPermission, SetHasCameraPermission] = useState();
     const [hasMediaLibraryPermission, SetHasMediaLibraryPermission] =
@@ -207,19 +209,21 @@ const TakeImage = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.centerImage}>
-                    <PinchGestureHandler
-                        onGestureEvent={handleZoomEvent}
-                        onHandlerStateChange={handleZoomEnd}
-                    >
-                        <Camera
-                            style={styles.camera}
-                            zoom={zoom}
-                            whiteBalance={whbalance}
-                            type={type}
-                            flashMode={flashMode}
-                            ref={cameraRef}
-                        />
-                    </PinchGestureHandler>
+                    {isFocused && (
+                        <PinchGestureHandler
+                            onGestureEvent={handleZoomEvent}
+                            onHandlerStateChange={handleZoomEnd}
+                        >
+                            <Camera
+                                style={styles.camera}
+                                zoom={zoom}
+                                whiteBalance={whbalance}
+                                type={type}
+                                flashMode={flashMode}
+                                ref={cameraRef}
+                            />
+                        </PinchGestureHandler>
+                    )}
 
                     {isZoomingEnded && (
                         <View

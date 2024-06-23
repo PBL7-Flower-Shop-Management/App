@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 45 * scale,
-        fontFamily: "Inter",
+        // fontFamily: "Inter",
         fontStyle: "normal",
         color: "#60A5FA",
         opacity: 1,

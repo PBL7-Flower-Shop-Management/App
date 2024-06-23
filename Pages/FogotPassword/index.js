@@ -22,6 +22,7 @@ const ForgotPassword = ({ navigation }) => {
     const validationSchema = yup.object().shape({
         email: yup
             .string()
+            .trim()
             .max(100, "Email length can't be greater than 100!")
             .email("Email format is invalid!")
             .required("Email is required"),

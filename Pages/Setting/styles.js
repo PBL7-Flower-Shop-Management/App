@@ -27,6 +27,16 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "center",
     },
+    waitingCircle: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1,
+    },
     iconCancel: {
         position: "absolute",
         left: 10,
